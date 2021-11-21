@@ -1,18 +1,12 @@
 package main
 
 import (
-	"prog/controllers"
 	"prog/db"
-
-	"github.com/labstack/echo/v4"
+	"prog/routes"
 )
 
 func main() {
 	db.InitDB()
-	e := echo.New()
-
-	e.GET("/users", controllers.GetAllUsers)
-	e.POST("/users", controllers.CreateUser)
-
+	e := routes.New()
 	e.Start(":8000")
 }
