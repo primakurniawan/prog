@@ -19,3 +19,9 @@ func CreateUser(data User) User {
 	db.DB.Create(&user)
 	return user
 }
+
+func Login(email, password string) int {
+	var user User
+	db.DB.Where("email = ? AND password = ?", email, password).First(&user)
+	return user.ID
+}

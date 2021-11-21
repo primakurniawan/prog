@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"prog/constants"
 	"prog/controllers"
 	"prog/middlewares"
 
@@ -13,11 +14,16 @@ func New() *echo.Echo {
 
 	e.GET("/users", controllers.GetAllUsers)
 	e.POST("/users", controllers.CreateUser)
+	e.POST("/login", controllers.Login)
 
 	middlewares.Logger(e)
 	eAuthBasic := e.Group("/auth")
 	eAuthBasic.Use(middleware.BasicAuth(middlewares.BasicAuth))
 	eAuthBasic.GET("/users", controllers.GetAllUsers)
+
+	eJWT := e.Group("/jwt")
+	eJWT.Use(middleware.JWT([]byte(constants.SECRET_JWT)))
+	eJWT.GET("/users", controllers.GetAllUsers)
 
 	return e
 

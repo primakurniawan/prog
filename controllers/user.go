@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"prog/middlewares"
 	"prog/models"
 
 	"github.com/labstack/echo"
@@ -26,4 +27,20 @@ func CreateUser(c echo.Context) error {
 		"user":   user,
 	})
 
+}
+
+func Login(c echo.Context) error {
+	userId := models.Login(c.FormValue("email"), c.FormValue("password"))
+
+	token, err := middlewares.CreateToken(userId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status": "fail",
+			"error":  err,
+		})
+	}
+	return c.JSON(http.StatusCreated, map[string]interface{}{
+		"status": "success",
+		"token":  token,
+	})
 }
