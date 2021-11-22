@@ -1,3 +1,3 @@
 package constants
 
-const SECRET_JWT = "CiRmMbKVfEbJmVTt"
+const SECRET_JWT = "6ad217eb7fd9669d92d3ef741670be2e244c485dcfc57c050cd7e2a2f8558ce592d73e0a66cc873f3b65ade6d182029e6147bdf1977b047221fcd1179775bfd7"
