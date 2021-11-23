@@ -1,6 +1,7 @@
 package business
 
 import (
+	// "fmt"
 	"prog/features/users"
 )
 
@@ -11,8 +12,6 @@ type userUsecase struct {
 func NewUserBusiness(userData users.Data) users.Business {
 	return &userUsecase{UserData: userData}
 }
-
-// GetUserById(id int) (Core, error)
 
 func (uu *userUsecase) RegisterUser(data users.Core) error {
 	err := uu.UserData.CreateUser(data)
@@ -41,4 +40,24 @@ func (us *userUsecase) GetUserById(id int) (users.Core, error) {
 	}
 
 	return userData, nil
+}
+
+func (uu *userUsecase) GetUserFollowingById(userId int) ([]users.Core, error) {
+	// fmt.Print(userId)
+	users, err := uu.UserData.GetUserFollowingById(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func (uu *userUsecase) GetUserFollowersById(userId int) ([]users.Core, error) {
+	// fmt.Print(userId)
+	users, err := uu.UserData.GetUserFollowersById(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }

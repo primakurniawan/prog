@@ -62,6 +62,7 @@ func (uh *UserHandler) GetUserByIdHandler(e echo.Context) error {
 	id, err := strconv.Atoi(e.Param("userId"))
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, map[string]interface{}{
+			"status":  "fail",
 			"message": err.Error(),
 		})
 	}
@@ -69,13 +70,46 @@ func (uh *UserHandler) GetUserByIdHandler(e echo.Context) error {
 	data, err := uh.UserBusiness.GetUserById(id)
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, map[string]interface{}{
+			"status":  "fail",
 			"message": err.Error(),
 		})
 	}
 
 	return e.JSON(http.StatusOK, map[string]interface{}{
-		"message": "Success",
-		"data":    response.ToUserResponse(data),
+		"status": "success",
+		"data":   response.ToUserResponse(data),
+	})
+
+}
+
+func (uh *UserHandler) GetUserFollowingByIdHandler(e echo.Context) error {
+	userId, _ := strconv.Atoi(e.Param("userId"))
+	data, err := uh.UserBusiness.GetUserFollowingById(userId)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": err.Error(),
+		})
+	}
+
+	return e.JSON(http.StatusOK, map[string]interface{}{
+		"status": "success",
+		"data":   response.ToUserResponseList(data),
+	})
+
+}
+
+func (uh *UserHandler) GetUserFollowersByIdHandler(e echo.Context) error {
+	userId, _ := strconv.Atoi(e.Param("userId"))
+	data, err := uh.UserBusiness.GetUserFollowersById(userId)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": err.Error(),
+		})
+	}
+
+	return e.JSON(http.StatusOK, map[string]interface{}{
+		"status": "success",
+		"data":   response.ToUserResponseList(data),
 	})
 
 }

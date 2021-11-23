@@ -2,6 +2,7 @@ package data
 
 import (
 	"errors"
+	// "fmt"
 	"prog/features/users"
 
 	"gorm.io/gorm"
@@ -54,32 +55,33 @@ func (ur *mysqlUserRepository) GetUserById(userId int) (users.Core, error) {
 
 }
 
-// func (ur *mysqlUserRepository) GetUserFollowing(userId int) ([]users.Core, error) {
+func (ur *mysqlUserRepository) GetUserFollowingById(userId int) ([]users.Core, error) {
+	// fmt.Print(userId)
+	var usersFollowing []User
 
-// 	var usersFollowing []UserFollows
+	err := ur.Conn.Raw("SELECT users.id, users.email, users.fullname, users.image FROM follows LEFT JOIN users ON follows.following_user_id = users.id WHERE follows.followers_user_id = ?", userId).Scan(&usersFollowing).Error
+	if err != nil {
+		return nil, err
+	}
 
-// 	err := ur.Conn.Raw("SELECT users.id, users.email, users.fullname, users.image FROM follows LEFT JOIN users ON follows.following_user_id = users.id WHERE follows.followers_user_id = ?", userId).Scan(&usersFollowing).Error
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	return toUserCoreList(usersFollowing), nil
 
-// 	return toUserFollowsList(usersFollowing), nil
+}
 
-// }
+func (ur *mysqlUserRepository) GetUserFollowersById(userId int) ([]users.Core, error) {
 
-// func (ur *mysqlUserRepository) GetUserFollowers(userId int) ([]users.Core, error) {
+	// fmt.Print(userId)
+	var usersFollowers []User
 
-// 	var usersFollowers []UserFollows
+	err := ur.Conn.Raw("SELECT users.id, users.email, users.fullname, users.image FROM follows LEFT JOIN users ON follows.followers_user_id = users.id WHERE follows.following_user_id = ?", userId).Scan(&usersFollowers).Error
 
-// 	err := ur.Conn.Raw("SELECT users.id, users.email, users.fullname, users.image FROM follows LEFT JOIN users ON follows.followers_user_id = users.id WHERE follows.following_user_id = ?", userId).Scan(&usersFollowers).Error
+	if err != nil {
+		return nil, err
+	}
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	return toUserCoreList(usersFollowers), nil
 
-// 	return toUserFollowsList(usersFollowers), nil
-
-// }
+}
 
 // func (ur *mysqlUserRepository) UpdateUserById(data users.Core) error {
 
