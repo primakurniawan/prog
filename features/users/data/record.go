@@ -19,6 +19,7 @@ func toUserRecord(user users.Core) User {
 	return User{
 		ID:       user.ID,
 		Email:    user.Email,
+		Password: user.Password,
 		Fullname: user.Fullname,
 		Image:    user.Image,
 	}

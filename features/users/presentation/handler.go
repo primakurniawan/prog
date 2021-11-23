@@ -26,6 +26,7 @@ func (uh *UserHandler) RegisterUserHandler(e echo.Context) error {
 	fmt.Println("data in handler =====", userData)
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, map[string]interface{}{
+			"status":  "fail",
 			"message": err.Error(),
 		})
 	}
@@ -33,27 +34,29 @@ func (uh *UserHandler) RegisterUserHandler(e echo.Context) error {
 	err = uh.UserBusiness.RegisterUser(userData.ToUserCore())
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
 			"message": err.Error(),
 		})
 	}
 
 	return e.JSON(http.StatusOK, map[string]interface{}{
-		"message": "Success",
+		"status":  "success",
+		"message": "new user is created",
 	})
 }
 
-func (uh *UserHandler) GetAllUserHandler(e echo.Context) error {
-	fullname := e.QueryParam("fullname")
-	data, err := uh.UserBusiness.GetUsersByFullname(fullname)
+func (uh *UserHandler) GetAllUsersHandler(e echo.Context) error {
+	data, err := uh.UserBusiness.GetAllUsers()
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
 			"message": err.Error(),
 		})
 	}
 
 	return e.JSON(http.StatusOK, map[string]interface{}{
-		"message": "Success",
-		"data":    response.ToUserResponseList(data),
+		"status": "success",
+		"data":   response.ToUserResponseList(data),
 	})
 
 }

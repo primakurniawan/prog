@@ -12,7 +12,7 @@ func New() *echo.Echo {
 
 	userPresentation := factory.InitUser()
 	e.POST("/users", userPresentation.UserHandler.RegisterUserHandler)
-	e.GET("/users", userPresentation.UserHandler.GetAllUserHandler)
+	e.GET("/users", userPresentation.UserHandler.GetAllUsersHandler)
 	e.GET("/users/:userId", userPresentation.UserHandler.GetUserByIdHandler)
 	e.GET("/users/:userId/following", userPresentation.UserHandler.GetUserFollowingByIdHandler)
 	e.GET("/users/:userId/followers", userPresentation.UserHandler.GetUserFollowersByIdHandler)

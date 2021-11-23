@@ -1,8 +1,7 @@
 package data
 
 import (
-	"errors"
-	// "fmt"
+	"fmt"
 	"prog/features/users"
 
 	"gorm.io/gorm"
@@ -19,6 +18,7 @@ func NewMysqlUserRepository(conn *gorm.DB) users.Data {
 }
 
 func (ur *mysqlUserRepository) CreateUser(data users.Core) error {
+
 	recordData := toUserRecord(data)
 	err := ur.Conn.Create(&recordData)
 	if err != nil {
@@ -27,11 +27,11 @@ func (ur *mysqlUserRepository) CreateUser(data users.Core) error {
 	return nil
 }
 
-func (ur *mysqlUserRepository) GetUsersByFullname(fullname string) ([]users.Core, error) {
+func (ur *mysqlUserRepository) GetAllUsers() ([]users.Core, error) {
 
 	var users []User
 
-	err := ur.Conn.Where("fullname LIKE ?", "%"+fullname+"%").Find(&users).Error
+	err := ur.Conn.Find(&users).Error
 	if err != nil {
 		return nil, err
 	}
@@ -42,11 +42,9 @@ func (ur *mysqlUserRepository) GetUsersByFullname(fullname string) ([]users.Core
 
 func (ur *mysqlUserRepository) GetUserById(userId int) (users.Core, error) {
 	var user User
+	fmt.Print(userId)
 	err := ur.Conn.First(&user, userId).Error
 
-	if user.Fullname == "" && user.ID == 0 {
-		return users.Core{}, errors.New("no existing user")
-	}
 	if err != nil {
 		return users.Core{}, err
 	}

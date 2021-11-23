@@ -1,8 +1,9 @@
 package business
 
 import (
-	// "fmt"
 	"prog/features/users"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type userUsecase struct {
@@ -14,7 +15,17 @@ func NewUserBusiness(userData users.Data) users.Business {
 }
 
 func (uu *userUsecase) RegisterUser(data users.Core) error {
-	err := uu.UserData.CreateUser(data)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(data.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	newUser := users.Core{
+		Email:    data.Email,
+		Password: string(hashedPassword),
+		Fullname: data.Fullname,
+		Image:    data.Image,
+	}
+	err = uu.UserData.CreateUser(newUser)
 
 	if err != nil {
 		return err
@@ -23,8 +34,8 @@ func (uu *userUsecase) RegisterUser(data users.Core) error {
 	return nil
 }
 
-func (uu *userUsecase) GetUsersByFullname(fullname string) ([]users.Core, error) {
-	users, err := uu.UserData.GetUsersByFullname(fullname)
+func (uu *userUsecase) GetAllUsers() ([]users.Core, error) {
+	users, err := uu.UserData.GetAllUsers()
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +54,6 @@ func (us *userUsecase) GetUserById(id int) (users.Core, error) {
 }
 
 func (uu *userUsecase) GetUserFollowingById(userId int) ([]users.Core, error) {
-	// fmt.Print(userId)
 	users, err := uu.UserData.GetUserFollowingById(userId)
 	if err != nil {
 		return nil, err
