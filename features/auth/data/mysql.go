@@ -52,12 +52,7 @@ func (ur *mysqlAuthRepository) DeleteRefreshToken(data auth.Core) error {
 func (ur *mysqlAuthRepository) VerifyUserCredential(data users.Core) (users.Core, error) {
 
 	recordData := toUserRecord(data)
-	err := ur.Conn.Where("email = ?", data.Email).First(&recordData).Error
-	if err != nil {
-		return users.Core{
-			ID: 0,
-		}, err
-	}
+	ur.Conn.Where("email = ?", data.Email).First(&recordData)
 	if recordData.Password == "" && recordData.ID == 0 {
 		return users.Core{
 			ID: 0,
