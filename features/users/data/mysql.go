@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"prog/features/users"
 
 	"gorm.io/gorm"
@@ -42,7 +41,6 @@ func (ur *mysqlUserRepository) GetAllUsers() ([]users.Core, error) {
 
 func (ur *mysqlUserRepository) GetUserById(userId int) (users.Core, error) {
 	var user User
-	fmt.Print(userId)
 	err := ur.Conn.First(&user, userId).Error
 
 	if err != nil {
@@ -54,7 +52,6 @@ func (ur *mysqlUserRepository) GetUserById(userId int) (users.Core, error) {
 }
 
 func (ur *mysqlUserRepository) GetUserFollowingById(userId int) ([]users.Core, error) {
-	// fmt.Print(userId)
 	var usersFollowing []User
 
 	err := ur.Conn.Raw("SELECT users.id, users.email, users.fullname, users.image FROM follows LEFT JOIN users ON follows.following_user_id = users.id WHERE follows.followers_user_id = ?", userId).Scan(&usersFollowing).Error
@@ -68,7 +65,6 @@ func (ur *mysqlUserRepository) GetUserFollowingById(userId int) ([]users.Core, e
 
 func (ur *mysqlUserRepository) GetUserFollowersById(userId int) ([]users.Core, error) {
 
-	// fmt.Print(userId)
 	var usersFollowers []User
 
 	err := ur.Conn.Raw("SELECT users.id, users.email, users.fullname, users.image FROM follows LEFT JOIN users ON follows.followers_user_id = users.id WHERE follows.following_user_id = ?", userId).Scan(&usersFollowers).Error

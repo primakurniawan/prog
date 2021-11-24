@@ -63,7 +63,6 @@ func (uu *userUsecase) GetUserFollowingById(userId int) ([]users.Core, error) {
 }
 
 func (uu *userUsecase) GetUserFollowersById(userId int) ([]users.Core, error) {
-	// fmt.Print(userId)
 	users, err := uu.UserData.GetUserFollowersById(userId)
 	if err != nil {
 		return nil, err

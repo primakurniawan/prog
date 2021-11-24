@@ -7,13 +7,13 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-type jwtCustomClaims struct {
-	ID int `json:"id"`
+type JwtCustomClaims struct {
+	UserId int `json:"userId"`
 	jwt.StandardClaims
 }
 
 func CreateToken(userId int) (string, error) {
-	claims := &jwtCustomClaims{
+	claims := &JwtCustomClaims{
 		userId,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour).Unix(),
@@ -21,5 +21,33 @@ func CreateToken(userId int) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(constants.SECRET_JWT))
+	return token.SignedString([]byte(constants.ACCESS_TOKEN_KEY))
+}
+
+func CreateRefreshToken(userId int) (string, error) {
+	claims := &JwtCustomClaims{
+		userId,
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(time.Hour).Unix(),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(constants.REFRESH_TOKEN_KEY))
+}
+
+func VerifyRefreshToken(refreshToken string) (userId int, err error) {
+	keyFunc := func(t *jwt.Token) (interface{}, error) {
+		return []byte(constants.REFRESH_TOKEN_KEY), nil
+	}
+	jwtToken, err := jwt.ParseWithClaims(refreshToken, &JwtCustomClaims{}, keyFunc)
+	if err != nil {
+		return 0, err
+	}
+
+	claims := jwtToken.Claims.(*JwtCustomClaims)
+	userId = claims.UserId
+
+	return userId, nil
+
 }
