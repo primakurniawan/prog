@@ -51,3 +51,19 @@ func VerifyRefreshToken(refreshToken string) (userId int, err error) {
 	return userId, nil
 
 }
+func VerifyAccessToken(accessToken string) (userId int, err error) {
+	keyFunc := func(t *jwt.Token) (interface{}, error) {
+		return []byte(constants.ACCESS_TOKEN_KEY), nil
+	}
+	jwtToken, err := jwt.ParseWithClaims(accessToken, &JwtCustomClaims{}, keyFunc)
+	if err != nil {
+		return 0, err
+
+	}
+
+	claims := jwtToken.Claims.(*JwtCustomClaims)
+	userId = claims.UserId
+
+	return userId, nil
+
+}

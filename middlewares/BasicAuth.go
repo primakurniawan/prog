@@ -4,7 +4,7 @@ import (
 	"prog/db"
 	"prog/models"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 func BasicAuth(email, password string, c echo.Context) (bool, error) {

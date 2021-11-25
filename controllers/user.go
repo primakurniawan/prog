@@ -5,7 +5,7 @@ import (
 	"prog/middlewares"
 	"prog/models"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 func GetAllUsers(c echo.Context) error {

@@ -1,9 +1,12 @@
 package routes
 
 import (
+	"prog/constants"
 	"prog/factory"
+	"prog/middlewares"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func New() *echo.Echo {
@@ -28,6 +31,18 @@ func New() *echo.Echo {
 	eUsers.GET("/:userId/following", userPresentation.UserHandler.GetUserFollowingByIdHandler)
 	eUsers.GET("/:userId/followers", userPresentation.UserHandler.GetUserFollowersByIdHandler)
 
+	articlePresentation := factory.InitArticle()
+	eArticles := e.Group("/articles")
+	configJWT := middleware.JWTConfig{
+		SigningKey: []byte(constants.ACCESS_TOKEN_KEY),
+		Claims:     &middlewares.JwtCustomClaims{},
+	}
+	eArticles.Use(middleware.JWTWithConfig(configJWT))
+	eArticles.POST("", articlePresentation.ArticleHandler.CreateArticleHandler)
+	eArticles.GET("", articlePresentation.ArticleHandler.GetAllArticleHandler)
+	eArticles.GET("/:articleId", articlePresentation.ArticleHandler.GetArticleByIdHandler)
+	eArticles.PATCH("/:articleId", articlePresentation.ArticleHandler.GetArticleByIdHandler)
+	eArticles.DELETE("/:articleId", articlePresentation.ArticleHandler.GetArticleByIdHandler)
 	// middlewares.Logger(e)
 	return n
 

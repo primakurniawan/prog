@@ -2,12 +2,16 @@ package migrate
 
 import (
 	"prog/db"
-	"prog/features/auth/data"
+	articles "prog/features/articles/data"
+	auth "prog/features/auth/data"
+	users "prog/features/users/data"
 )
 
 func AutoMigrate() {
 	db.DB.AutoMigrate(
-		&data.User{},
-		&data.Authentication{},
+		&users.User{},
+		&auth.Authentication{},
+		&articles.Article{},
+		&articles.Tag{},
 	)
 }
