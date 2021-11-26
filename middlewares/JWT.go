@@ -2,9 +2,11 @@ package middlewares
 
 import (
 	"prog/constants"
+	"strings"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo/v4"
 )
 
 type JwtCustomClaims struct {
@@ -51,14 +53,15 @@ func VerifyRefreshToken(refreshToken string) (userId int, err error) {
 	return userId, nil
 
 }
-func VerifyAccessToken(accessToken string) (userId int, err error) {
+
+func VerifyAccessToken(c echo.Context) (userId int, err error) {
 	keyFunc := func(t *jwt.Token) (interface{}, error) {
 		return []byte(constants.ACCESS_TOKEN_KEY), nil
 	}
+	accessToken := strings.Split(c.Request().Header.Get("Authorization"), " ")[1]
 	jwtToken, err := jwt.ParseWithClaims(accessToken, &JwtCustomClaims{}, keyFunc)
 	if err != nil {
 		return 0, err
-
 	}
 
 	claims := jwtToken.Claims.(*JwtCustomClaims)

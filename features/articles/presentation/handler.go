@@ -6,7 +6,6 @@ import (
 	"prog/features/articles/presentation/request"
 	"prog/features/articles/presentation/response"
 	"prog/middlewares"
-	"strings"
 
 	"strconv"
 
@@ -33,8 +32,7 @@ func (uh *ArticleHandler) CreateArticleHandler(e echo.Context) error {
 		})
 	}
 
-	accessToken := strings.Split(e.Request().Header.Get("Authorization"), " ")[1]
-	userId, err := middlewares.VerifyAccessToken(accessToken)
+	userId, err := middlewares.VerifyAccessToken(e)
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",
@@ -111,8 +109,8 @@ func (ah *ArticleHandler) UpdateArticleByIdHandler(e echo.Context) error {
 			"err":     err.Error(),
 		})
 	}
-	accessToken := strings.Split(e.Request().Header.Get("Authorization"), " ")[1]
-	userId, err := middlewares.VerifyAccessToken(accessToken)
+
+	userId, err := middlewares.VerifyAccessToken(e)
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",
@@ -139,15 +137,16 @@ func (ah *ArticleHandler) UpdateArticleByIdHandler(e echo.Context) error {
 
 func (uh *ArticleHandler) DeleteArticleByIdHandler(e echo.Context) error {
 	articleId, _ := strconv.Atoi(e.Param("articleId"))
-	accessToken := strings.Split(e.Request().Header.Get("Authorization"), " ")[1]
-	userId, err := middlewares.VerifyAccessToken(accessToken)
+
+	userId, err := middlewares.VerifyAccessToken(e)
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",
-			"message": "can not create article",
+			"message": "can not delete article",
 			"err":     err.Error(),
 		})
 	}
+
 	err = uh.ArticleBusiness.DeleteArticleById(articleId, userId)
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{

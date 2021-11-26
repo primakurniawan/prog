@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"prog/features/articles"
 
 	"gorm.io/gorm"
@@ -39,10 +40,13 @@ func (ar *mysqlArticleRepository) CreateTags(tags []articles.TagCore) ([]article
 
 func (ar *mysqlArticleRepository) CreateArticle(data articles.Core, userId int, tags []articles.TagCore) error {
 
+	data.UserId = userId
+	data.Tags = tags
+
 	recordData := toArticleRecord(data)
-	err := ar.Conn.Create(&recordData)
+	err := ar.Conn.Create(&recordData).Error
 	if err != nil {
-		return err.Error
+		return err
 	}
 	return nil
 }
@@ -50,7 +54,7 @@ func (ar *mysqlArticleRepository) CreateArticle(data articles.Core, userId int, 
 func (ar *mysqlArticleRepository) GetAllArticles() ([]articles.Core, error) {
 
 	articles := []Article{}
-	err := ar.Conn.Find(&articles).Error
+	err := ar.Conn.Joins("User").Preload("Tags").Find(&articles).Error
 	if err != nil {
 		return toArticleCoreList([]Article{}), err
 	}
@@ -60,7 +64,7 @@ func (ar *mysqlArticleRepository) GetAllArticles() ([]articles.Core, error) {
 func (ar *mysqlArticleRepository) GetArticleById(articleId int) (articles.Core, error) {
 
 	article := Article{}
-	err := ar.Conn.First(&article, articleId).Error
+	err := ar.Conn.Joins("User").Preload("Tags").First(&article, articleId).Error
 	if err != nil {
 		return toArticleCore(Article{}), err
 	}
@@ -89,7 +93,8 @@ func (ar *mysqlArticleRepository) DeleteArticleById(articleId int) error {
 
 func (ar *mysqlArticleRepository) VerifyArticleOwner(articleId int, userId int) error {
 
-	err := ar.Conn.Where("id = ? AND userId >= ?", articleId, userId).First(&Article{}).Error
+	fmt.Print(articleId, userId)
+	err := ar.Conn.Where("id = ? AND user_id = ?", articleId, userId).First(&Article{}).Error
 	if err != nil {
 		return err
 	}

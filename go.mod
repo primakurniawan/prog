@@ -15,8 +15,7 @@ require (
 )
 
 require (
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/jinzhu/now v1.1.3 // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
 	golang.org/x/crypto v0.0.0-20211117183948-ae814b36b871

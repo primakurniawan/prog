@@ -1,6 +1,7 @@
 package business
 
 import (
+	"fmt"
 	"prog/features/articles"
 )
 
@@ -18,8 +19,6 @@ func (uu *articleUsecase) CreateArticle(data articles.Core, userId int) error {
 	if err != nil {
 		return err
 	}
-	data.Tags = tags
-	data.UserId = userId
 
 	err = uu.ArticleData.CreateArticle(data, userId, tags)
 	if err != nil {
@@ -50,6 +49,7 @@ func (us *articleUsecase) GetArticleById(articleId int) (articles.Core, error) {
 func (uu *articleUsecase) UpdateArticleById(articleId int, data articles.Core, userId int) error {
 	err := uu.ArticleData.VerifyArticleOwner(articleId, userId)
 	if err != nil {
+		fmt.Print("Error disini")
 		return err
 	}
 	err = uu.ArticleData.UpdateArticleById(articleId, data)

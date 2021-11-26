@@ -13,6 +13,10 @@ func New() *echo.Echo {
 	n := echo.New()
 	e := n.Group("/v1")
 
+	configJWT := middleware.JWTConfig{
+		SigningKey: []byte(constants.ACCESS_TOKEN_KEY),
+		Claims:     &middlewares.JwtCustomClaims{},
+	}
 	presenter := factory.Init()
 
 	eAuth := e.Group("/auth")
@@ -28,16 +32,11 @@ func New() *echo.Echo {
 	eUsers.GET("/:userId/followers", presenter.UserHandler.GetUserFollowersByIdHandler)
 
 	eArticles := e.Group("/articles")
-	configJWT := middleware.JWTConfig{
-		SigningKey: []byte(constants.ACCESS_TOKEN_KEY),
-		Claims:     &middlewares.JwtCustomClaims{},
-	}
-	eArticles.Use(middleware.JWTWithConfig(configJWT))
-	eArticles.POST("", presenter.ArticleHandler.CreateArticleHandler)
+	eArticles.POST("", presenter.ArticleHandler.CreateArticleHandler, middleware.JWTWithConfig(configJWT))
 	eArticles.GET("", presenter.ArticleHandler.GetAllArticleHandler)
 	eArticles.GET("/:articleId", presenter.ArticleHandler.GetArticleByIdHandler)
-	eArticles.PATCH("/:articleId", presenter.ArticleHandler.GetArticleByIdHandler)
-	eArticles.DELETE("/:articleId", presenter.ArticleHandler.GetArticleByIdHandler)
+	eArticles.PATCH("/:articleId", presenter.ArticleHandler.UpdateArticleByIdHandler, middleware.JWTWithConfig(configJWT))
+	eArticles.DELETE("/:articleId", presenter.ArticleHandler.DeleteArticleByIdHandler, middleware.JWTWithConfig(configJWT))
 	// middlewares.Logger(e)
 	return n
 
