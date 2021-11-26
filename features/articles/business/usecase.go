@@ -14,9 +14,13 @@ func NewArticleBusiness(articleData articles.Data) articles.Business {
 
 func (uu *articleUsecase) CreateArticle(data articles.Core, userId int) error {
 	tags, err := uu.ArticleData.CreateTags(data.Tags)
+
 	if err != nil {
 		return err
 	}
+	data.Tags = tags
+	data.UserId = userId
+
 	err = uu.ArticleData.CreateArticle(data, userId, tags)
 	if err != nil {
 		return err

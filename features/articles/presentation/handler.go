@@ -53,7 +53,7 @@ func (uh *ArticleHandler) CreateArticleHandler(e echo.Context) error {
 
 	return e.JSON(http.StatusOK, map[string]interface{}{
 		"status":  "success",
-		"message": "new user is created",
+		"message": "new article is created",
 	})
 }
 

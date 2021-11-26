@@ -17,7 +17,7 @@ func NewMysqlArticleRepository(conn *gorm.DB) articles.Data {
 }
 
 func (ar *mysqlArticleRepository) CreateTags(tags []articles.TagCore) ([]articles.TagCore, error) {
-	tagsTitle := make([]string, len(tags))
+	tagsTitle := make([]string, 0, len(tags))
 	articleTags := []Tag{}
 	for _, tag := range tags {
 		err := ar.Conn.Where("title = ?", tag.Title).First(&Tag{}).Error
