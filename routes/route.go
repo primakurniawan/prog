@@ -30,6 +30,8 @@ func New() *echo.Echo {
 	eUsers.GET("/:userId", presenter.UserHandler.GetUserByIdHandler)
 	eUsers.GET("/:userId/following", presenter.UserHandler.GetUserFollowingByIdHandler)
 	eUsers.GET("/:userId/followers", presenter.UserHandler.GetUserFollowersByIdHandler)
+	eUsers.PUT("/:userId/follow", presenter.FollowHandler.FollowUser)
+	eUsers.DELETE("/:userId/follow", presenter.FollowHandler.UnfollowUser)
 	eUsers.GET("/:userId/likes", presenter.ArticleLikesHandler.GetLikedArticles)
 
 	eUser := e.Group("/user")

@@ -22,6 +22,11 @@ import (
 	articleLikesBusiness "prog/features/likes/business"
 	articleLikesData "prog/features/likes/data"
 	articleLikesPresentation "prog/features/likes/presentation"
+
+	// follows domain
+	followsBusiness "prog/features/follows/business"
+	followsData "prog/features/follows/data"
+	followsPresentation "prog/features/follows/presentation"
 )
 
 type Presenter struct {
@@ -29,6 +34,7 @@ type Presenter struct {
 	UserHandler         userPresentation.UserHandler
 	ArticleHandler      articlePresentation.ArticleHandler
 	ArticleLikesHandler articleLikesPresentation.ArticleLikesHandler
+	FollowHandler       followsPresentation.FollowsHandler
 }
 
 func Init() Presenter {
@@ -52,10 +58,16 @@ func Init() Presenter {
 	articleLikesBusiness := articleLikesBusiness.NewArticleLikesBusiness(articleLikesData)
 	articleLikesPresentation := articleLikesPresentation.NewArticleLikesHandler(articleLikesBusiness)
 
+	// follows layer
+	followsData := followsData.NewMysqlFollowRepository(db.DB)
+	followsBusiness := followsBusiness.NewFollowsBusiness(followsData)
+	followsPresentation := followsPresentation.NewArticleLikesHandler(followsBusiness)
+
 	return Presenter{
 		AuthHandler:         *authPresentation,
 		UserHandler:         *userPresentation,
 		ArticleHandler:      *articlePresentation,
 		ArticleLikesHandler: *articleLikesPresentation,
+		FollowHandler:       *followsPresentation,
 	}
 }
