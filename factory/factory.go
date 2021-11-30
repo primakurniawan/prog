@@ -27,6 +27,11 @@ import (
 	followsBusiness "prog/features/follows/business"
 	followsData "prog/features/follows/data"
 	followsPresentation "prog/features/follows/presentation"
+
+	// comments domain
+	commentsBusiness "prog/features/comments/business"
+	commentsData "prog/features/comments/data"
+	commentsPresentation "prog/features/comments/presentation"
 )
 
 type Presenter struct {
@@ -35,6 +40,7 @@ type Presenter struct {
 	ArticleHandler      articlePresentation.ArticleHandler
 	ArticleLikesHandler articleLikesPresentation.ArticleLikesHandler
 	FollowHandler       followsPresentation.FollowsHandler
+	CommentHandler      commentsPresentation.CommentHandler
 }
 
 func Init() Presenter {
@@ -63,11 +69,17 @@ func Init() Presenter {
 	followsBusiness := followsBusiness.NewFollowsBusiness(followsData)
 	followsPresentation := followsPresentation.NewArticleLikesHandler(followsBusiness)
 
+	// comments layer
+	commentsData := commentsData.NewMysqlCommentsRepository(db.DB)
+	commentsBusiness := commentsBusiness.NewCommentsBusiness(commentsData)
+	commentsPresentation := commentsPresentation.NewCommentHandler(commentsBusiness)
+
 	return Presenter{
 		AuthHandler:         *authPresentation,
 		UserHandler:         *userPresentation,
 		ArticleHandler:      *articlePresentation,
 		ArticleLikesHandler: *articleLikesPresentation,
 		FollowHandler:       *followsPresentation,
+		CommentHandler:      *commentsPresentation,
 	}
 }

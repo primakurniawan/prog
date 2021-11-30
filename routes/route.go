@@ -17,6 +17,7 @@ func New() *echo.Echo {
 		SigningKey: []byte(constants.ACCESS_TOKEN_KEY),
 		Claims:     &middlewares.JwtCustomClaims{},
 	}
+
 	presenter := factory.Init()
 
 	eAuth := e.Group("/auth")
@@ -33,10 +34,10 @@ func New() *echo.Echo {
 	eUsers.PUT("/:userId/follow", presenter.FollowHandler.FollowUser)
 	eUsers.DELETE("/:userId/follow", presenter.FollowHandler.UnfollowUser)
 	eUsers.GET("/:userId/likes", presenter.ArticleLikesHandler.GetLikedArticles)
-
-	eUser := e.Group("/user")
-	eUser.GET("", presenter.UserHandler.GetUserByIdHandler)
 	eUsers.GET("/:userId/articles", presenter.ArticleHandler.GetAllUserArticlesHandler)
+
+	// eUser := e.Group("/user")
+	// eUser.GET("", presenter.UserHandler.GetUserByIdHandler)
 
 	eArticles := e.Group("/articles")
 	eArticles.POST("", presenter.ArticleHandler.CreateArticleHandler, middleware.JWTWithConfig(configJWT))
@@ -47,6 +48,10 @@ func New() *echo.Echo {
 	eArticles.DELETE("/:articleId/likes", presenter.ArticleLikesHandler.UnlikeArticle, middleware.JWTWithConfig(configJWT))
 	eArticles.PATCH("/:articleId", presenter.ArticleHandler.UpdateArticleByIdHandler, middleware.JWTWithConfig(configJWT))
 	eArticles.DELETE("/:articleId", presenter.ArticleHandler.DeleteArticleByIdHandler, middleware.JWTWithConfig(configJWT))
+	eArticles.GET("/:articleId/comments", presenter.CommentHandler.GetArticleComments)
+	eArticles.POST("/:articleId/comments", presenter.CommentHandler.AddComment)
+	eArticles.PATCH("/:articleId/comments/:commentId", presenter.CommentHandler.UpdateComment)
+	eArticles.DELETE("/:articleId/comments/:commentId", presenter.CommentHandler.DeleteComment)
 	// middlewares.Logger(e)
 	return n
 
