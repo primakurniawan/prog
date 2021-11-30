@@ -49,9 +49,9 @@ func New() *echo.Echo {
 	eArticles.PATCH("/:articleId", presenter.ArticleHandler.UpdateArticleByIdHandler, middleware.JWTWithConfig(configJWT))
 	eArticles.DELETE("/:articleId", presenter.ArticleHandler.DeleteArticleByIdHandler, middleware.JWTWithConfig(configJWT))
 	eArticles.GET("/:articleId/comments", presenter.CommentHandler.GetArticleComments)
-	eArticles.POST("/:articleId/comments", presenter.CommentHandler.AddComment)
-	eArticles.PATCH("/:articleId/comments/:commentId", presenter.CommentHandler.UpdateComment)
-	eArticles.DELETE("/:articleId/comments/:commentId", presenter.CommentHandler.DeleteComment)
+	eArticles.POST("/:articleId/comments", presenter.CommentHandler.AddComment, middleware.JWTWithConfig(configJWT))
+	eArticles.PATCH("/:articleId/comments/:commentId", presenter.CommentHandler.UpdateComment, middleware.JWTWithConfig(configJWT))
+	eArticles.DELETE("/:articleId/comments/:commentId", presenter.CommentHandler.DeleteComment, middleware.JWTWithConfig(configJWT))
 	// middlewares.Logger(e)
 	return n
 

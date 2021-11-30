@@ -44,7 +44,7 @@ func (alr *mysqlFollowRepository) UnfollowUser(followingUserId, followersUserId 
 func (alr *mysqlFollowRepository) GetFollowingUsers(followersUserId int) ([]follows.UserCore, error) {
 
 	var followingUsers []Follow
-	err := alr.Conn.Preload(clause.Associations).Joins("User").Where("followers_user_id = ?", followersUserId).Find(&followingUsers).Error
+	err := alr.Conn.Preload(clause.Associations).Joins("FollowersUser").Where("followers_user_id = ?", followersUserId).Find(&followingUsers).Error
 	if err != nil {
 		return []follows.UserCore{}, err
 	}
@@ -54,7 +54,7 @@ func (alr *mysqlFollowRepository) GetFollowingUsers(followersUserId int) ([]foll
 func (alr *mysqlFollowRepository) GetFollowersUsers(followingUserId int) ([]follows.UserCore, error) {
 
 	var followersUsers []Follow
-	err := alr.Conn.Preload(clause.Associations).Joins("User").Where("followers_user_id = ?", followingUserId).Find(&followersUsers).Error
+	err := alr.Conn.Preload(clause.Associations).Joins("FollowingUser").Where("followers_user_id = ?", followingUserId).Find(&followersUsers).Error
 	if err != nil {
 		return []follows.UserCore{}, err
 	}

@@ -5,6 +5,7 @@ import (
 	articles "prog/features/articles/data"
 	auth "prog/features/auth/data"
 	comments "prog/features/comments/data"
+	follows "prog/features/follows/data"
 	likes "prog/features/likes/data"
 	users "prog/features/users/data"
 )
@@ -17,5 +18,6 @@ func AutoMigrate() {
 		&articles.Tag{},
 		&likes.ArticleLikes{},
 		&comments.Comment{},
+		&follows.Follow{},
 	)
 }

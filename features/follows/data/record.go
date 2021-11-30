@@ -9,6 +9,7 @@ import (
 
 type Follow struct {
 	gorm.Model
+	ID              int
 	FollowingUserId int
 	FollowingUser   User
 	FollowersUserId int
