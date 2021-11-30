@@ -29,7 +29,7 @@ func (uh *UserHandler) RegisterUserHandler(e echo.Context) error {
 		})
 	}
 
-	err = uh.UserBusiness.RegisterUser(userData.ToUserCore())
+	userId, err := uh.UserBusiness.RegisterUser(userData.ToUserCore())
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",
@@ -37,7 +37,10 @@ func (uh *UserHandler) RegisterUserHandler(e echo.Context) error {
 		})
 	}
 
-	return e.JSON(http.StatusOK, map[string]interface{}{
+	location := "http:/localhost:8000/v1/users/" + strconv.Itoa(userId)
+	e.Response().Header().Set(echo.HeaderLocation, location)
+
+	return e.JSON(http.StatusCreated, map[string]interface{}{
 		"status":  "success",
 		"message": "new user is created",
 	})
@@ -60,7 +63,7 @@ func (uh *UserHandler) GetAllUsersHandler(e echo.Context) error {
 }
 
 func (uh *UserHandler) GetUserByIdHandler(e echo.Context) error {
-	id, err := strconv.Atoi(e.Param("userId"))
+	userId, err := strconv.Atoi(e.Param("userId"))
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, map[string]interface{}{
 			"status":  "fail",
@@ -68,7 +71,7 @@ func (uh *UserHandler) GetUserByIdHandler(e echo.Context) error {
 		})
 	}
 
-	data, err := uh.UserBusiness.GetUserById(id)
+	data, err := uh.UserBusiness.GetUserById(userId)
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, map[string]interface{}{
 			"status":  "fail",

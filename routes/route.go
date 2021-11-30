@@ -30,11 +30,18 @@ func New() *echo.Echo {
 	eUsers.GET("/:userId", presenter.UserHandler.GetUserByIdHandler)
 	eUsers.GET("/:userId/following", presenter.UserHandler.GetUserFollowingByIdHandler)
 	eUsers.GET("/:userId/followers", presenter.UserHandler.GetUserFollowersByIdHandler)
+	eUsers.GET("/:userId/likes", presenter.ArticleLikesHandler.GetLikedArticles)
+
+	eUser := e.Group("/user")
+	eUser.GET("", presenter.UserHandler.GetUserByIdHandler)
 
 	eArticles := e.Group("/articles")
 	eArticles.POST("", presenter.ArticleHandler.CreateArticleHandler, middleware.JWTWithConfig(configJWT))
 	eArticles.GET("", presenter.ArticleHandler.GetAllArticleHandler)
 	eArticles.GET("/:articleId", presenter.ArticleHandler.GetArticleByIdHandler)
+	eArticles.GET("/:articleId/likes", presenter.ArticleLikesHandler.GetLikingUsers)
+	eArticles.PUT("/:articleId/likes", presenter.ArticleLikesHandler.LikeArticle, middleware.JWTWithConfig(configJWT))
+	eArticles.DELETE("/:articleId/likes", presenter.ArticleLikesHandler.UnlikeArticle, middleware.JWTWithConfig(configJWT))
 	eArticles.PATCH("/:articleId", presenter.ArticleHandler.UpdateArticleByIdHandler, middleware.JWTWithConfig(configJWT))
 	eArticles.DELETE("/:articleId", presenter.ArticleHandler.DeleteArticleByIdHandler, middleware.JWTWithConfig(configJWT))
 	// middlewares.Logger(e)

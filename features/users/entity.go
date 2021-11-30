@@ -9,7 +9,7 @@ type Core struct {
 }
 
 type Business interface {
-	RegisterUser(data Core) error
+	RegisterUser(data Core) (userId int, err error)
 	GetAllUsers() ([]Core, error)
 	GetUserById(id int) (Core, error)
 	GetUserFollowingById(userId int) ([]Core, error)
@@ -19,7 +19,7 @@ type Business interface {
 }
 
 type Data interface {
-	CreateUser(data Core) error
+	CreateUser(data Core) (userId int, err error)
 	GetAllUsers() ([]Core, error)
 	GetUserById(userId int) (Core, error)
 	GetUserFollowingById(userId int) ([]Core, error)

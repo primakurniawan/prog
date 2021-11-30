@@ -16,14 +16,14 @@ func NewMysqlUserRepository(conn *gorm.DB) users.Data {
 	}
 }
 
-func (ur *mysqlUserRepository) CreateUser(data users.Core) error {
+func (ur *mysqlUserRepository) CreateUser(data users.Core) (userId int, err error) {
 
 	recordData := toUserRecord(data)
-	err := ur.Conn.Create(&recordData)
+	err = ur.Conn.Create(&recordData).Error
 	if err != nil {
-		return err.Error
+		return 0, err
 	}
-	return nil
+	return recordData.ID, nil
 }
 
 func (ur *mysqlUserRepository) GetAllUsers() ([]users.Core, error) {

@@ -17,14 +17,18 @@ import (
 	articleBusiness "prog/features/articles/business"
 	articleData "prog/features/articles/data"
 	articlePresentation "prog/features/articles/presentation"
+
+	// likes domain
+	articleLikesBusiness "prog/features/likes/business"
+	articleLikesData "prog/features/likes/data"
+	articleLikesPresentation "prog/features/likes/presentation"
 )
 
 type Presenter struct {
-	AuthHandler authPresentation.AuthHandler
-
-	UserHandler userPresentation.UserHandler
-
-	ArticleHandler articlePresentation.ArticleHandler
+	AuthHandler         authPresentation.AuthHandler
+	UserHandler         userPresentation.UserHandler
+	ArticleHandler      articlePresentation.ArticleHandler
+	ArticleLikesHandler articleLikesPresentation.ArticleLikesHandler
 }
 
 func Init() Presenter {
@@ -38,14 +42,20 @@ func Init() Presenter {
 	userBusiness := userBusiness.NewUserBusiness(userData)
 	userPresentation := userPresentation.NewUserHandler(userBusiness)
 
+	// articles layer
 	articleData := articleData.NewMysqlArticleRepository(db.DB)
 	articleBusiness := articleBusiness.NewArticleBusiness(articleData)
 	articlePresentation := articlePresentation.NewArticleHandler(articleBusiness)
 
-	return Presenter{
-		AuthHandler: *authPresentation,
-		UserHandler: *userPresentation,
+	// article likes layer
+	articleLikesData := articleLikesData.NewMysqlArticleLikesRepository(db.DB)
+	articleLikesBusiness := articleLikesBusiness.NewArticleLikesBusiness(articleLikesData)
+	articleLikesPresentation := articleLikesPresentation.NewArticleLikesHandler(articleLikesBusiness)
 
-		ArticleHandler: *articlePresentation,
+	return Presenter{
+		AuthHandler:         *authPresentation,
+		UserHandler:         *userPresentation,
+		ArticleHandler:      *articlePresentation,
+		ArticleLikesHandler: *articleLikesPresentation,
 	}
 }
