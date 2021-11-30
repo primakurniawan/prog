@@ -36,6 +36,7 @@ func New() *echo.Echo {
 
 	eUser := e.Group("/user")
 	eUser.GET("", presenter.UserHandler.GetUserByIdHandler)
+	eUsers.GET("/:userId/articles", presenter.ArticleHandler.GetAllUserArticlesHandler)
 
 	eArticles := e.Group("/articles")
 	eArticles.POST("", presenter.ArticleHandler.CreateArticleHandler, middleware.JWTWithConfig(configJWT))

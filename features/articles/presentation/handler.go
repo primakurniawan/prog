@@ -162,3 +162,29 @@ func (uh *ArticleHandler) DeleteArticleByIdHandler(e echo.Context) error {
 	})
 
 }
+
+func (ah *ArticleHandler) GetAllUserArticlesHandler(e echo.Context) error {
+
+	userId, err := strconv.Atoi(e.Param("userId"))
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not get all user articles",
+			"err":     err.Error(),
+		})
+	}
+	data, err := ah.ArticleBusiness.GetAllUserArticles(userId)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not get all user articles",
+			"err":     err.Error(),
+		})
+	}
+
+	return e.JSON(http.StatusOK, map[string]interface{}{
+		"status": "success",
+		"data":   response.ToArticleResponseList(data),
+	})
+
+}

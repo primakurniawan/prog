@@ -100,3 +100,13 @@ func (ar *mysqlArticleRepository) VerifyArticleOwner(articleId int, userId int) 
 	}
 	return nil
 }
+
+func (ar *mysqlArticleRepository) GetAllUserArticles(userId int) ([]articles.Core, error) {
+
+	articles := []Article{}
+	err := ar.Conn.Joins("User").Preload("Tags").Where("user_id = ?", userId).Find(&articles).Error
+	if err != nil {
+		return toArticleCoreList([]Article{}), err
+	}
+	return toArticleCoreList(articles), nil
+}
