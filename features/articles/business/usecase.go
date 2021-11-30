@@ -73,3 +73,12 @@ func (uu *articleUsecase) DeleteArticleById(articleId, userId int) error {
 
 	return nil
 }
+
+func (uu *articleUsecase) GetAllUserArticles(userId int) ([]articles.Core, error) {
+	articles, err := uu.ArticleData.GetAllUserArticles(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return articles, nil
+}

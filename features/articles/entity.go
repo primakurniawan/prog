@@ -32,6 +32,7 @@ type Business interface {
 	GetArticleById(articleId int) (Core, error)
 	UpdateArticleById(articleId int, data Core, userId int) error
 	DeleteArticleById(articleId int, userId int) error
+	GetAllUserArticles(userId int) ([]Core, error)
 }
 
 type Data interface {
@@ -42,4 +43,5 @@ type Data interface {
 	UpdateArticleById(articleId int, data Core) error
 	DeleteArticleById(articleId int) error
 	VerifyArticleOwner(articleId int, userId int) error
+	GetAllUserArticles(userId int) ([]Core, error)
 }
