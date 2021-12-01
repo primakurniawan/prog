@@ -19,22 +19,51 @@ func NewAuthHandler(authBusiness auth.Business) *AuthHandler {
 }
 
 func (ah *AuthHandler) LoginHandler(e echo.Context) error {
+
 	user := request.UserRequest{}
 	e.Bind(&user)
-	accessToken, refreshToken, err := ah.AuthBusiness.Login(user.ToUserCore())
+	userId, err := ah.AuthBusiness.VerifyUserCredential(user.ToUserCore())
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, map[string]interface{}{
 			"status":  "fail",
-			"message": "cannot create acccess token and refresh token",
+			"message": "can not login",
 			"err":     err.Error(),
 		})
 	}
+
+	accessToken, err := middlewares.CreateToken(userId)
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not login",
+			"err":     err.Error(),
+		})
+	}
+
+	refreshToken, err := middlewares.CreateRefreshToken(userId)
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not login",
+			"err":     err.Error(),
+		})
+	}
+
+	err = ah.AuthBusiness.AddRefreshToken(auth.Core{Token: refreshToken})
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not login",
+			"err":     err.Error(),
+		})
+	}
+
 	return e.JSON(http.StatusBadRequest, map[string]interface{}{
 		"status":  "success",
-		"message": "create acccess token and refresh token",
+		"message": "login",
 		"data": response.AuthResponse{
-			AccessToken:  accessToken.Token,
-			RefreshToken: refreshToken.Token,
+			AccessToken:  accessToken,
+			RefreshToken: refreshToken,
 		},
 	})
 }
@@ -42,29 +71,37 @@ func (ah *AuthHandler) LoginHandler(e echo.Context) error {
 func (ah *AuthHandler) ReLoginHandler(e echo.Context) error {
 	auth := request.TokenRequest{}
 	e.Bind(&auth)
-	userId, err := middlewares.VerifyRefreshToken(auth.RefreshToken)
-
+	err := ah.AuthBusiness.VerifyRefreshToken(auth.ToTokenCore())
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, map[string]interface{}{
 			"status":  "fail",
-			"message": "cannot create acccess token",
+			"message": "can not login",
 			"err":     err.Error(),
 		})
 	}
 
-	accessToken, err := ah.AuthBusiness.ReLogin(auth.ToTokenCore(), userId)
+	userId, err := middlewares.VerifyRefreshToken(auth.RefreshToken)
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, map[string]interface{}{
 			"status":  "fail",
-			"message": "cannot create acccess token",
+			"message": "can not login",
+			"err":     err.Error(),
+		})
+	}
+
+	accessToken, err := middlewares.CreateToken(userId)
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not login",
 			"err":     err.Error(),
 		})
 	}
 	return e.JSON(http.StatusBadRequest, map[string]interface{}{
 		"status":  "success",
-		"message": "create acccess token",
+		"message": "login",
 		"data": response.AuthRefreshResponse{
-			AccessToken: accessToken.Token,
+			AccessToken: accessToken,
 		},
 	})
 
@@ -73,17 +110,28 @@ func (ah *AuthHandler) ReLoginHandler(e echo.Context) error {
 func (ah *AuthHandler) LogoutHandler(e echo.Context) error {
 	auth := request.TokenRequest{}
 	e.Bind(&auth)
-	err := ah.AuthBusiness.Logout(auth.ToTokenCore())
+
+	err := ah.AuthBusiness.VerifyRefreshToken(auth.ToTokenCore())
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, map[string]interface{}{
 			"status":  "fail",
-			"message": "cannot delete refresh token",
+			"message": "cannot logout",
 			"err":     err.Error(),
 		})
 	}
+
+	err = ah.AuthBusiness.DeleteRefreshToken(auth.ToTokenCore())
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, map[string]interface{}{
+			"status":  "fail",
+			"message": "cannot logout",
+			"err":     err.Error(),
+		})
+	}
+
 	return e.JSON(http.StatusOK, map[string]interface{}{
 		"status":  "success",
-		"message": "delete refresh token",
+		"message": "logout",
 	})
 
 }
