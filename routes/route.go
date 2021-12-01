@@ -52,7 +52,16 @@ func New() *echo.Echo {
 	eArticles.POST("/:articleId/comments", presenter.CommentHandler.AddComment, middleware.JWTWithConfig(configJWT))
 	eArticles.PATCH("/:articleId/comments/:commentId", presenter.CommentHandler.UpdateComment, middleware.JWTWithConfig(configJWT))
 	eArticles.DELETE("/:articleId/comments/:commentId", presenter.CommentHandler.DeleteComment, middleware.JWTWithConfig(configJWT))
-	// middlewares.Logger(e)
+
+	eSeries := e.Group("/series")
+	eSeries.GET("", presenter.SeriesHandler.GetAllSeriesHandler)
+	eSeries.POST("", presenter.SeriesHandler.CreateSeriesHandler, middleware.JWTWithConfig(configJWT))
+	eSeries.DELETE("/:seriesId", presenter.SeriesHandler.DeleteSeriesHandler, middleware.JWTWithConfig(configJWT))
+	eSeries.PATCH("/:seriesId", presenter.SeriesHandler.UpdateSeriesByIdHandler, middleware.JWTWithConfig(configJWT))
+	eSeries.POST("/:seriesId", presenter.SeriesHandler.AddArticleSeriesHandler, middleware.JWTWithConfig(configJWT))
+	eSeries.GET("/:seriesId/articles", presenter.SeriesHandler.GetAllArticlesSeriesHandler)
+
+	// middlewares.Logger(n)
 	return n
 
 }
