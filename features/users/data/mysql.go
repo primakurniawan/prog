@@ -77,9 +77,26 @@ func (ur *mysqlUserRepository) GetUserFollowersById(userId int) ([]users.Core, e
 
 }
 
-// func (ur *mysqlUserRepository) UpdateUserById(data users.Core) error {
+func (ur *mysqlUserRepository) UpdateUserById(userId int, data users.Core) error {
+	user := User{}
+	err := ur.Conn.First(&user, userId).Error
+	if err != nil {
+		return err
+	}
+	user.Fullname = data.Fullname
+	user.Image = data.Image
 
-// }
-// func (ur *mysqlUserRepository) DeleteUserById(data users.Core) error {
+	err = ur.Conn.Save(&user).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
-// }
+func (ur *mysqlUserRepository) DeleteUserById(userId int) error {
+	err := ur.Conn.Delete(&User{}, userId).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -44,7 +44,7 @@ func toUserCoreList(uList []User) []users.Core {
 	return convertedUser
 }
 
-func toUserRecordList(uList []users.Core) []User {
+func ToUserRecordList(uList []users.Core) []User {
 	convertedUser := []User{}
 
 	for _, user := range uList {

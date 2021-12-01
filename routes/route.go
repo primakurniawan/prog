@@ -36,8 +36,11 @@ func New() *echo.Echo {
 	eUsers.GET("/:userId/likes", presenter.ArticleLikesHandler.GetLikedArticles)
 	eUsers.GET("/:userId/articles", presenter.ArticleHandler.GetAllUserArticlesHandler)
 
-	// eUser := e.Group("/user")
+	eUser := e.Group("/user")
+	eUser.Use(middleware.JWTWithConfig(configJWT))
 	// eUser.GET("", presenter.UserHandler.GetUserByIdHandler)
+	eUser.PATCH("", presenter.UserHandler.UpdateUserHandler)
+	eUser.DELETE("", presenter.UserHandler.DeleteUserHandler)
 
 	eArticles := e.Group("/articles")
 	eArticles.POST("", presenter.ArticleHandler.CreateArticleHandler, middleware.JWTWithConfig(configJWT))

@@ -40,6 +40,7 @@ func (uh *ArticleHandler) CreateArticleHandler(e echo.Context) error {
 			"err":     err.Error(),
 		})
 	}
+
 	err = uh.ArticleBusiness.CreateArticle(articleData.ToArticleCore(), userId)
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{

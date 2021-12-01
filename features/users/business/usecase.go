@@ -70,3 +70,21 @@ func (uu *userUsecase) GetUserFollowersById(userId int) ([]users.Core, error) {
 
 	return users, nil
 }
+
+func (uu *userUsecase) UpdateUserById(userId int, data users.Core) error {
+	err := uu.UserData.UpdateUserById(userId, data)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (uu *userUsecase) DeleteUserById(userId int) error {
+	err := uu.UserData.DeleteUserById(userId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

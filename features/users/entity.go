@@ -14,8 +14,8 @@ type Business interface {
 	GetUserById(id int) (Core, error)
 	GetUserFollowingById(userId int) ([]Core, error)
 	GetUserFollowersById(userId int) ([]Core, error)
-	// UpdateUser(id int, data Core) error
-	// DeleteUser(id int, data Core) error
+	UpdateUserById(userId int, data Core) error
+	DeleteUserById(userId int) error
 }
 
 type Data interface {
@@ -24,6 +24,6 @@ type Data interface {
 	GetUserById(userId int) (Core, error)
 	GetUserFollowingById(userId int) ([]Core, error)
 	GetUserFollowersById(userId int) ([]Core, error)
-	// UpdateUserById(id int, data Core) error
-	// DeleteUserById(id int, data Core) error
+	UpdateUserById(userId int, data Core) error
+	DeleteUserById(userId int) error
 }
