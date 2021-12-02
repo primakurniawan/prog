@@ -103,7 +103,7 @@ func (ur *mysqlSeriesRepository) GetAllArticleSeries(seriesId int) ([]articles.C
 
 	var articlesSeries []ArticleSeries
 
-	err := ur.Conn.Preload(clause.Associations).Joins("Article").Where("series_id = ?", seriesId).Find(&articlesSeries).Error
+	err := ur.Conn.Preload(clause.Associations).Preload("Article.User").Where("series_id = ?", seriesId).Find(&articlesSeries).Error
 
 	if err != nil {
 		return nil, err

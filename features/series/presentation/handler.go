@@ -2,6 +2,7 @@ package presentation
 
 import (
 	"net/http"
+	articleResponse "prog/features/articles/presentation/response"
 	"prog/features/series"
 	"prog/features/series/presentation/request"
 	"prog/features/series/presentation/response"
@@ -211,7 +212,7 @@ func (sh *SeriesHandler) GetAllArticlesSeriesHandler(e echo.Context) error {
 
 	return e.JSON(http.StatusOK, map[string]interface{}{
 		"status": "success",
-		"data":   response.ToArticleResponseList(articles),
+		"data":   articleResponse.ToArticleResponseList(articles),
 	})
 
 }

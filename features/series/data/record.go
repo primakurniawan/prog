@@ -4,7 +4,6 @@ import (
 	"prog/features/articles"
 	articleData "prog/features/articles/data"
 	"prog/features/series"
-	"prog/features/users"
 	userData "prog/features/users/data"
 	"time"
 
@@ -24,16 +23,16 @@ type Series struct {
 
 type ArticleSeries struct {
 	gorm.Model
-	ArticleId int
+	ArticleID int
 	Article   articleData.Article
-	SeriesId  int
+	SeriesID  int
 	Series    Series
 }
 
 func toArticlesSeriesRecord(articlesSeries series.ArticlesSeriesCore) ArticleSeries {
 	return ArticleSeries{
-		ArticleId: articlesSeries.ArticleId,
-		SeriesId:  articlesSeries.SeriesId,
+		ArticleID: articlesSeries.ArticleId,
+		SeriesID:  articlesSeries.SeriesId,
 	}
 }
 
@@ -43,7 +42,7 @@ func toSeriesRecord(series series.SeriesCore) Series {
 		Title:       series.Title,
 		Description: series.Description,
 		UserID:      series.UserID,
-		User:        toUserRecord(series.User),
+		User:        userData.ToUserRecord(series.User),
 	}
 }
 
@@ -53,25 +52,7 @@ func toSeriesCore(seriesRecord Series) series.SeriesCore {
 		Title:       seriesRecord.Title,
 		Description: seriesRecord.Description,
 		UserID:      seriesRecord.UserID,
-		User:        toUserCore(seriesRecord.User),
-	}
-}
-
-func toUserRecord(user users.Core) userData.User {
-	return userData.User{
-		ID:       user.ID,
-		Email:    user.Email,
-		Fullname: user.Fullname,
-		Image:    user.Email,
-	}
-}
-
-func toUserCore(user userData.User) users.Core {
-	return users.Core{
-		ID:       user.ID,
-		Email:    user.Email,
-		Fullname: user.Fullname,
-		Image:    user.Image,
+		User:        userData.ToUserCore(seriesRecord.User),
 	}
 }
 
