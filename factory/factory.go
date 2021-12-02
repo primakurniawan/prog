@@ -58,7 +58,7 @@ func Init() Presenter {
 	// users layer
 	userData := userData.NewMysqlUserRepository(db.DB)
 	userBusiness := userBusiness.NewUserBusiness(userData)
-	userPresentation := userPresentation.NewUserHandler(userBusiness)
+	userPresentation := userPresentation.NewUserHandler(userBusiness, authBusiness)
 
 	// articles layer
 	articleData := articleData.NewMysqlArticleRepository(db.DB)

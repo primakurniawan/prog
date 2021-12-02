@@ -17,8 +17,8 @@ type UserHandler struct {
 	AuthBusiness auth.Business
 }
 
-func NewUserHandler(userBusiness users.Business) *UserHandler {
-	return &UserHandler{UserBusiness: userBusiness}
+func NewUserHandler(userBusiness users.Business, authBusiness auth.Business) *UserHandler {
+	return &UserHandler{UserBusiness: userBusiness, AuthBusiness: authBusiness}
 }
 
 func (uh *UserHandler) RegisterUserHandler(e echo.Context) error {
@@ -71,6 +71,31 @@ func (uh *UserHandler) GetUserByIdHandler(e echo.Context) error {
 		return e.JSON(http.StatusBadRequest, map[string]interface{}{
 			"status":  "fail",
 			"message": err.Error(),
+		})
+	}
+
+	data, err := uh.UserBusiness.GetUserById(userId)
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, map[string]interface{}{
+			"status":  "fail",
+			"message": err.Error(),
+		})
+	}
+
+	return e.JSON(http.StatusOK, map[string]interface{}{
+		"status": "success",
+		"data":   response.ToUserResponse(data),
+	})
+
+}
+
+func (uh *UserHandler) GetUserHandler(e echo.Context) error {
+	userId, err := middlewares.VerifyAccessToken(e)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not create article",
+			"err":     err.Error(),
 		})
 	}
 
@@ -166,7 +191,7 @@ func (uh *UserHandler) DeleteUserHandler(e echo.Context) error {
 		})
 	}
 
-	_, err = middlewares.VerifyAccessToken(e)
+	userId, err := middlewares.VerifyAccessToken(e)
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",
@@ -175,7 +200,7 @@ func (uh *UserHandler) DeleteUserHandler(e echo.Context) error {
 		})
 	}
 
-	userId, err := uh.AuthBusiness.VerifyUserCredential(userData.ToUserCore())
+	userId, err = uh.AuthBusiness.VerifyUserCredential(userData.ToUserCore())
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",
