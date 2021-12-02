@@ -2,6 +2,7 @@ package presentation
 
 import (
 	"net/http"
+	"prog/features/articles"
 	articleResponse "prog/features/articles/presentation/response"
 	"prog/features/series"
 	"prog/features/series/presentation/request"
@@ -13,11 +14,12 @@ import (
 )
 
 type SeriesHandler struct {
-	SeriesBusiness series.Business
+	SeriesBusiness  series.Business
+	ArticleBusiness articles.Business
 }
 
-func NewSeriesHandler(seriesBusiness series.Business) *SeriesHandler {
-	return &SeriesHandler{SeriesBusiness: seriesBusiness}
+func NewSeriesHandler(seriesBusiness series.Business, articleBusiness articles.Business) *SeriesHandler {
+	return &SeriesHandler{SeriesBusiness: seriesBusiness, ArticleBusiness: articleBusiness}
 }
 
 func (sh *SeriesHandler) CreateSeriesHandler(e echo.Context) error {
@@ -219,6 +221,16 @@ func (sh *SeriesHandler) GetAllArticlesSeriesHandler(e echo.Context) error {
 
 func (sh *SeriesHandler) AddArticleSeriesHandler(e echo.Context) error {
 	requestData := request.ArticleSeriesRequest{}
+
+	userId, err := middlewares.VerifyAccessToken(e)
+	if err != nil {
+		return e.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not create series",
+			"err":     err.Error(),
+		})
+	}
+
 	seriesId, err := strconv.Atoi(e.Param("seriesId"))
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -230,7 +242,100 @@ func (sh *SeriesHandler) AddArticleSeriesHandler(e echo.Context) error {
 
 	e.Bind(&requestData)
 
+	_, err = sh.ArticleBusiness.GetArticleById(requestData.ArticleId)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not add article to series",
+			"err":     err.Error(),
+		})
+	}
+
+	err = sh.ArticleBusiness.VerifyArticleOwner(requestData.ArticleId, userId)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not add article to series",
+			"err":     err.Error(),
+		})
+	}
+
+	err = sh.SeriesBusiness.VerifySeriesOwner(seriesId, userId)
+	if err != nil {
+		return e.JSON(http.StatusForbidden, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not delete series",
+			"err":     err.Error(),
+		})
+	}
+
 	err = sh.SeriesBusiness.AddArticleSeries(requestData.ToArticleSeriesCore(seriesId))
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not add article to series",
+			"err":     err.Error(),
+		})
+	}
+
+	return e.JSON(http.StatusOK, map[string]interface{}{
+		"status":  "success",
+		"message": "add article to series",
+	})
+
+}
+
+func (sh *SeriesHandler) DeleteArticleSeriesHandler(e echo.Context) error {
+	requestData := request.ArticleSeriesRequest{}
+
+	userId, err := middlewares.VerifyAccessToken(e)
+	if err != nil {
+		return e.JSON(http.StatusUnauthorized, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not create series",
+			"err":     err.Error(),
+		})
+	}
+
+	seriesId, err := strconv.Atoi(e.Param("seriesId"))
+	if err != nil {
+		return e.JSON(http.StatusBadRequest, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not add article to series",
+			"err":     err.Error(),
+		})
+	}
+
+	e.Bind(&requestData)
+
+	_, err = sh.ArticleBusiness.GetArticleById(requestData.ArticleId)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not add article to series",
+			"err":     err.Error(),
+		})
+	}
+
+	err = sh.ArticleBusiness.VerifyArticleOwner(requestData.ArticleId, userId)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not add article to series",
+			"err":     err.Error(),
+		})
+	}
+
+	err = sh.SeriesBusiness.VerifySeriesOwner(seriesId, userId)
+	if err != nil {
+		return e.JSON(http.StatusForbidden, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not delete series",
+			"err":     err.Error(),
+		})
+	}
+
+	err = sh.SeriesBusiness.DeleteArticleSeries(requestData.ToArticleSeriesCore(seriesId))
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",

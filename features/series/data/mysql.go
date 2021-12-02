@@ -99,6 +99,20 @@ func (ur *mysqlSeriesRepository) AddArticleSeries(data series.ArticlesSeriesCore
 
 }
 
+func (ur *mysqlSeriesRepository) DeleteArticleSeries(data series.ArticlesSeriesCore) error {
+
+	articlesSeries := toArticlesSeriesRecord(data)
+
+	err := ur.Conn.Delete(&articlesSeries).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
 func (ur *mysqlSeriesRepository) GetAllArticleSeries(seriesId int) ([]articles.ArticleCore, error) {
 
 	var articlesSeries []ArticleSeries

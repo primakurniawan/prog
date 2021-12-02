@@ -49,6 +49,15 @@ func (uu *seriesUsecase) AddArticleSeries(data series.ArticlesSeriesCore) error 
 	return nil
 }
 
+func (uu *seriesUsecase) DeleteArticleSeries(data series.ArticlesSeriesCore) error {
+	err := uu.SeriesData.DeleteArticleSeries(data)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (uu *seriesUsecase) GetAllSeries() ([]series.SeriesCore, error) {
 	series, err := uu.SeriesData.GetAllSeries()
 	if err != nil {

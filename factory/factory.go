@@ -83,7 +83,7 @@ func Init() Presenter {
 	// series layer
 	seriesData := seriesData.NewMysqlSeriesRepository(db.DB)
 	seriesBusiness := seriesBusiness.NewSeriesBusiness(seriesData)
-	seriesPresentation := seriesPresentation.NewSeriesHandler(seriesBusiness)
+	seriesPresentation := seriesPresentation.NewSeriesHandler(seriesBusiness, articleBusiness)
 
 	return Presenter{
 		AuthHandler:         *authPresentation,

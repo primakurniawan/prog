@@ -28,6 +28,7 @@ type Business interface {
 	DeleteSeries(seriesId int) error
 	UpdateSeriesById(seriesId int, data SeriesCore) error
 	AddArticleSeries(data ArticlesSeriesCore) error
+	DeleteArticleSeries(data ArticlesSeriesCore) error
 	GetAllSeries() ([]SeriesCore, error)
 	GetSeriesById(seriesId int) (SeriesCore, error)
 	GetAllArticleSeries(seriesId int) ([]articles.ArticleCore, error)
@@ -39,6 +40,7 @@ type Data interface {
 	DeleteSeries(seriesId int) error
 	UpdateSeriesById(seriesId int, data SeriesCore) error
 	AddArticleSeries(data ArticlesSeriesCore) error
+	DeleteArticleSeries(data ArticlesSeriesCore) error
 	GetAllSeries() ([]SeriesCore, error)
 	GetSeriesById(seriesId int) (SeriesCore, error)
 	GetAllArticleSeries(seriesId int) ([]articles.ArticleCore, error)
