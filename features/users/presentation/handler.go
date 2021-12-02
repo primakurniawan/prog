@@ -114,38 +114,6 @@ func (uh *UserHandler) GetUserHandler(e echo.Context) error {
 
 }
 
-func (uh *UserHandler) GetUserFollowingByIdHandler(e echo.Context) error {
-	userId, _ := strconv.Atoi(e.Param("userId"))
-	data, err := uh.UserBusiness.GetUserFollowingById(userId)
-	if err != nil {
-		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message": err.Error(),
-		})
-	}
-
-	return e.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success",
-		"data":   response.ToUserResponseList(data),
-	})
-
-}
-
-func (uh *UserHandler) GetUserFollowersByIdHandler(e echo.Context) error {
-	userId, _ := strconv.Atoi(e.Param("userId"))
-	data, err := uh.UserBusiness.GetUserFollowersById(userId)
-	if err != nil {
-		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message": err.Error(),
-		})
-	}
-
-	return e.JSON(http.StatusOK, map[string]interface{}{
-		"status": "success",
-		"data":   response.ToUserResponseList(data),
-	})
-
-}
-
 func (uh *UserHandler) UpdateUserHandler(e echo.Context) error {
 	userData := request.UserRequest{}
 
