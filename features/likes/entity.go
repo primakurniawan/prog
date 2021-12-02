@@ -1,48 +1,27 @@
 package likes
 
-import "time"
+import (
+	"prog/features/articles"
+	"prog/features/users"
+)
 
 type Core struct {
 	UserId    int
-	User      UserCore
+	User      users.Core
 	ArticleId int
-	Article   ArticleCore
-}
-
-type UserCore struct {
-	ID       int
-	Email    string
-	Fullname string
-	Image    string
-}
-
-type ArticleCore struct {
-	ID        int
-	Title     string
-	Image     string
-	Content   string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	UserId    int
-	User      UserCore
-	Tags      []TagCore
-}
-
-type TagCore struct {
-	ID    int
-	Title string
+	Article   articles.Core
 }
 
 type Business interface {
 	LikeArticle(articleId, userId int) error
-	GetLikedArticles(userId int) ([]ArticleCore, error)
-	GetLikingUsers(articleId int) ([]UserCore, error)
+	GetLikedArticles(userId int) ([]articles.Core, error)
+	GetLikingUsers(articleId int) ([]users.Core, error)
 	UnlikeArticle(articleId, userId int) error
 }
 
 type Data interface {
 	LikeArticle(articleId, userId int) error
-	GetLikedArticles(userId int) ([]ArticleCore, error)
-	GetLikingUsers(articleId int) ([]UserCore, error)
+	GetLikedArticles(userId int) ([]articles.Core, error)
+	GetLikingUsers(articleId int) ([]users.Core, error)
 	UnlikeArticle(articleId, userId int) error
 }

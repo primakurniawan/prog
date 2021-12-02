@@ -1,8 +1,8 @@
 package data
 
 import (
-	"prog/features/articles"
 	"prog/features/comments"
+	"prog/features/users"
 	"time"
 
 	"gorm.io/gorm"
@@ -55,7 +55,7 @@ func toCommentsRecord(data comments.Core) Comment {
 	}
 }
 
-func toUserRecord(user articles.UserCore) User {
+func toUserRecord(user users.Core) User {
 	return User{
 		ID:       user.ID,
 		Email:    user.Email,

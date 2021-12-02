@@ -34,16 +34,16 @@ func (ar *mysqlArticleRepository) CreateTags(tags []articles.TagCore) ([]article
 	if err != nil {
 		return []articles.TagCore{}, err
 	}
-	return toTagsCoreList(articleTags), nil
+	return ToTagsCoreList(articleTags), nil
 
 }
 
 func (ar *mysqlArticleRepository) CreateArticle(data articles.Core, userId int, tags []articles.TagCore) error {
 
-	data.UserId = userId
+	data.UserID = userId
 	data.Tags = tags
 
-	recordData := toArticleRecord(data)
+	recordData := ToArticleRecord(data)
 	err := ar.Conn.Create(&recordData).Error
 	if err != nil {
 		return err
@@ -56,9 +56,9 @@ func (ar *mysqlArticleRepository) GetAllArticles() ([]articles.Core, error) {
 	articles := []Article{}
 	err := ar.Conn.Joins("User").Preload("Tags").Find(&articles).Error
 	if err != nil {
-		return toArticleCoreList([]Article{}), err
+		return ToArticleCoreList([]Article{}), err
 	}
-	return toArticleCoreList(articles), nil
+	return ToArticleCoreList(articles), nil
 }
 
 func (ar *mysqlArticleRepository) GetArticleById(articleId int) (articles.Core, error) {
@@ -66,14 +66,14 @@ func (ar *mysqlArticleRepository) GetArticleById(articleId int) (articles.Core, 
 	article := Article{}
 	err := ar.Conn.Joins("User").Preload("Tags").First(&article, articleId).Error
 	if err != nil {
-		return toArticleCore(Article{}), err
+		return ToArticleCore(Article{}), err
 	}
-	return toArticleCore(article), nil
+	return ToArticleCore(article), nil
 }
 
 func (ar *mysqlArticleRepository) UpdateArticleById(articleId int, data articles.Core) error {
 
-	article := toArticleRecord(data)
+	article := ToArticleRecord(data)
 	article.ID = articleId
 	err := ar.Conn.Save(&article).Error
 	if err != nil {
@@ -106,7 +106,7 @@ func (ar *mysqlArticleRepository) GetAllUserArticles(userId int) ([]articles.Cor
 	articles := []Article{}
 	err := ar.Conn.Joins("User").Preload("Tags").Where("user_id = ?", userId).Find(&articles).Error
 	if err != nil {
-		return toArticleCoreList([]Article{}), err
+		return ToArticleCoreList([]Article{}), err
 	}
-	return toArticleCoreList(articles), nil
+	return ToArticleCoreList(articles), nil
 }

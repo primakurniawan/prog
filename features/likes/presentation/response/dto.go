@@ -1,7 +1,8 @@
 package response
 
 import (
-	"prog/features/likes"
+	"prog/features/articles"
+	"prog/features/users"
 	"time"
 )
 
@@ -23,7 +24,7 @@ type UserResponse struct {
 	Image    string `json:"image"`
 }
 
-func ToArticleResponse(article likes.ArticleCore) ArticleResponse {
+func ToArticleResponse(article articles.Core) ArticleResponse {
 	return ArticleResponse{
 		ID:        article.ID,
 		Title:     article.Title,
@@ -36,16 +37,16 @@ func ToArticleResponse(article likes.ArticleCore) ArticleResponse {
 	}
 }
 
-func toUserResponse(article likes.UserCore) UserResponse {
+func toUserResponse(user users.Core) UserResponse {
 	return UserResponse{
-		ID:       article.ID,
-		Email:    article.Email,
-		Fullname: article.Fullname,
-		Image:    article.Image,
+		ID:       user.ID,
+		Email:    user.Email,
+		Fullname: user.Fullname,
+		Image:    user.Image,
 	}
 }
 
-func toTagsResponse(tags []likes.TagCore) []string {
+func toTagsResponse(tags []articles.TagCore) []string {
 	convertedTags := make([]string, 0, len(tags))
 	for _, v := range tags {
 		convertedTags = append(convertedTags, v.Title)
@@ -53,7 +54,7 @@ func toTagsResponse(tags []likes.TagCore) []string {
 	return convertedTags
 }
 
-func ToArticleResponseList(articleList []likes.ArticleCore) []ArticleResponse {
+func ToArticleResponseList(articleList []articles.Core) []ArticleResponse {
 	convertedArticle := []ArticleResponse{}
 	for _, article := range articleList {
 		convertedArticle = append(convertedArticle, ToArticleResponse(article))
@@ -62,7 +63,7 @@ func ToArticleResponseList(articleList []likes.ArticleCore) []ArticleResponse {
 	return convertedArticle
 }
 
-func ToUserResponseList(userList []likes.UserCore) []UserResponse {
+func ToUserResponseList(userList []users.Core) []UserResponse {
 	convertedArticle := []UserResponse{}
 	for _, user := range userList {
 		convertedArticle = append(convertedArticle, toUserResponse(user))

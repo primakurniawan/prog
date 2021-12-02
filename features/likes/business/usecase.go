@@ -1,7 +1,9 @@
 package business
 
 import (
+	"prog/features/articles"
 	"prog/features/likes"
+	"prog/features/users"
 )
 
 type articleLikesUsecase struct {
@@ -28,7 +30,7 @@ func (alu *articleLikesUsecase) UnlikeArticle(articleId, userId int) error {
 	return nil
 }
 
-func (alu *articleLikesUsecase) GetLikedArticles(userId int) ([]likes.ArticleCore, error) {
+func (alu *articleLikesUsecase) GetLikedArticles(userId int) ([]articles.Core, error) {
 	articles, err := alu.LikeData.GetLikedArticles(userId)
 	if err != nil {
 		return nil, err
@@ -37,7 +39,7 @@ func (alu *articleLikesUsecase) GetLikedArticles(userId int) ([]likes.ArticleCor
 	return articles, nil
 }
 
-func (alu *articleLikesUsecase) GetLikingUsers(articleId int) ([]likes.UserCore, error) {
+func (alu *articleLikesUsecase) GetLikingUsers(articleId int) ([]users.Core, error) {
 	users, err := alu.LikeData.GetLikingUsers(articleId)
 	if err != nil {
 		return nil, err

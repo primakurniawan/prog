@@ -1,7 +1,10 @@
 package data
 
 import (
+	"fmt"
+	"prog/features/articles"
 	"prog/features/likes"
+	"prog/features/users"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -43,22 +46,23 @@ func (alr *mysqlArticleLikesRepository) UnlikeArticle(articleId, userId int) err
 	return nil
 }
 
-func (alr *mysqlArticleLikesRepository) GetLikingUsers(articleId int) ([]likes.UserCore, error) {
+func (alr *mysqlArticleLikesRepository) GetLikingUsers(articleId int) ([]users.Core, error) {
 
 	var articleLikes []ArticleLikes
 	err := alr.Conn.Preload(clause.Associations).Joins("User").Where("article_likes.article_id = ?", articleId).Find(&articleLikes).Error
 	if err != nil {
-		return []likes.UserCore{}, err
+		return []users.Core{}, err
 	}
-	return toUserCoreList(articleLikes), nil
+	return ToUserCoreList(articleLikes), nil
 }
 
-func (alr *mysqlArticleLikesRepository) GetLikedArticles(userId int) ([]likes.ArticleCore, error) {
+func (alr *mysqlArticleLikesRepository) GetLikedArticles(userId int) ([]articles.Core, error) {
 
 	var articleLikes []ArticleLikes
 	err := alr.Conn.Preload(clause.Associations).Joins("Article").Where("article_likes.user_id = ?", userId).Find(&articleLikes).Error
 	if err != nil {
-		return []likes.ArticleCore{}, err
+		return []articles.Core{}, err
 	}
-	return toArticleCoreList(articleLikes), nil
+	fmt.Print(articleLikes[0].ArticleID)
+	return ToArticleCoreList(articleLikes), nil
 }

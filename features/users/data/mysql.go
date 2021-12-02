@@ -18,7 +18,7 @@ func NewMysqlUserRepository(conn *gorm.DB) users.Data {
 
 func (ur *mysqlUserRepository) CreateUser(data users.Core) (userId int, err error) {
 
-	recordData := toUserRecord(data)
+	recordData := ToUserRecord(data)
 	err = ur.Conn.Create(&recordData).Error
 	if err != nil {
 		return 0, err
@@ -35,7 +35,7 @@ func (ur *mysqlUserRepository) GetAllUsers() ([]users.Core, error) {
 		return nil, err
 	}
 
-	return toUserCoreList(users), nil
+	return ToUserCoreList(users), nil
 
 }
 
@@ -47,7 +47,7 @@ func (ur *mysqlUserRepository) GetUserById(userId int) (users.Core, error) {
 		return users.Core{}, err
 	}
 
-	return toUserCore(user), nil
+	return ToUserCore(user), nil
 
 }
 
@@ -59,7 +59,7 @@ func (ur *mysqlUserRepository) GetUserFollowingById(userId int) ([]users.Core, e
 		return nil, err
 	}
 
-	return toUserCoreList(usersFollowing), nil
+	return ToUserCoreList(usersFollowing), nil
 
 }
 
@@ -73,7 +73,7 @@ func (ur *mysqlUserRepository) GetUserFollowersById(userId int) ([]users.Core, e
 		return nil, err
 	}
 
-	return toUserCoreList(usersFollowers), nil
+	return ToUserCoreList(usersFollowers), nil
 
 }
 

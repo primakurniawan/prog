@@ -2,6 +2,7 @@ package response
 
 import (
 	"prog/features/articles"
+	"prog/features/users"
 	"time"
 )
 
@@ -36,7 +37,7 @@ func ToArticleResponse(article articles.Core) ArticleResponse {
 	}
 }
 
-func toUserResponse(article articles.UserCore) UserResponse {
+func toUserResponse(article users.Core) UserResponse {
 	return UserResponse{
 		ID:       article.ID,
 		Email:    article.Email,

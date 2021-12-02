@@ -2,6 +2,7 @@ package data
 
 import (
 	"prog/features/articles"
+	userData "prog/features/users/data"
 	"time"
 
 	"gorm.io/gorm"
@@ -16,16 +17,8 @@ type Article struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	UserID    int
-	User      User
+	User      userData.User
 	Tags      []Tag `gorm:"many2many:article_tags;"`
-}
-
-type User struct {
-	gorm.Model
-	ID       int
-	Email    string
-	Fullname string
-	Image    string
 }
 
 type Tag struct {
@@ -34,23 +27,14 @@ type Tag struct {
 	Title string `gorm:"unique"`
 }
 
-func toUserRecord(user articles.UserCore) User {
-	return User{
-		ID:       user.ID,
-		Email:    user.Email,
-		Fullname: user.Fullname,
-		Image:    user.Image,
-	}
-}
-
-func toTagRecord(tag articles.TagCore) Tag {
+func ToTagRecord(tag articles.TagCore) Tag {
 	return Tag{
 		ID:    tag.ID,
 		Title: tag.Title,
 	}
 }
 
-func toArticleRecord(article articles.Core) Article {
+func ToArticleRecord(article articles.Core) Article {
 	return Article{
 		ID:        article.ID,
 		Title:     article.Title,
@@ -58,13 +42,13 @@ func toArticleRecord(article articles.Core) Article {
 		Content:   article.Content,
 		CreatedAt: article.CreatedAt,
 		UpdatedAt: article.UpdatedAt,
-		UserID:    article.UserId,
-		User:      toUserRecord(article.User),
-		Tags:      toTagsRecordList(article.Tags),
+		UserID:    article.UserID,
+		User:      userData.ToUserRecord(article.User),
+		Tags:      ToTagsRecordList(article.Tags),
 	}
 }
 
-func toArticleCore(article Article) articles.Core {
+func ToArticleCore(article Article) articles.Core {
 	return articles.Core{
 		ID:        article.ID,
 		Title:     article.Title,
@@ -72,52 +56,43 @@ func toArticleCore(article Article) articles.Core {
 		Content:   article.Content,
 		CreatedAt: article.CreatedAt,
 		UpdatedAt: article.UpdatedAt,
-		User:      toUserCore(article.User),
-		Tags:      toTagsCoreList(article.Tags),
+		User:      userData.ToUserCore(article.User),
+		Tags:      ToTagsCoreList(article.Tags),
 	}
 }
 
-func toUserCore(user User) articles.UserCore {
-	return articles.UserCore{
-		ID:       user.ID,
-		Email:    user.Email,
-		Fullname: user.Fullname,
-		Image:    user.Image,
-	}
-}
-
-func toTagCore(tag Tag) articles.TagCore {
+func ToTagCore(tag Tag) articles.TagCore {
 	return articles.TagCore{
 		ID:    tag.ID,
 		Title: tag.Title,
 	}
 }
 
-func toArticleCoreList(aList []Article) []articles.Core {
+func ToArticleCoreList(aList []Article) []articles.Core {
 	convertedArticle := []articles.Core{}
 
 	for _, article := range aList {
-		convertedArticle = append(convertedArticle, toArticleCore(article))
+		convertedArticle = append(convertedArticle, ToArticleCore(article))
 	}
 
 	return convertedArticle
 }
 
-func toTagsCoreList(tList []Tag) []articles.TagCore {
+func ToTagsCoreList(tList []Tag) []articles.TagCore {
 	convertedTag := []articles.TagCore{}
 
 	for _, tag := range tList {
-		convertedTag = append(convertedTag, toTagCore(tag))
+		convertedTag = append(convertedTag, ToTagCore(tag))
 	}
 
 	return convertedTag
 }
 
-func toTagsRecordList(tList []articles.TagCore) []Tag {
+func ToTagsRecordList(tList []articles.TagCore) []Tag {
 	convertedUser := []Tag{}
 
 	for _, tag := range tList {
-		convertedUser = append(convertedUser, toTagRecord(tag))
+		convertedUser = append(convertedUser, ToTagRecord(tag))
 	}
 
 	return convertedUser

@@ -1,6 +1,9 @@
 package articles
 
-import "time"
+import (
+	"prog/features/users"
+	"time"
+)
 
 type Core struct {
 	ID        int
@@ -9,16 +12,9 @@ type Core struct {
 	Content   string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	UserId    int
-	User      UserCore
+	UserID    int
+	User      users.Core
 	Tags      []TagCore
-}
-
-type UserCore struct {
-	ID       int
-	Email    string
-	Fullname string
-	Image    string
 }
 
 type TagCore struct {

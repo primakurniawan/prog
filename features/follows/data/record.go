@@ -1,8 +1,8 @@
 package data
 
 import (
-	"prog/features/articles"
 	"prog/features/follows"
+	"prog/features/users"
 
 	"gorm.io/gorm"
 )
@@ -31,7 +31,7 @@ func toFollowRecord(data follows.Core) Follow {
 	}
 }
 
-func toUserRecord(user articles.UserCore) User {
+func toUserRecord(user users.Core) User {
 	return User{
 		ID:       user.ID,
 		Email:    user.Email,
