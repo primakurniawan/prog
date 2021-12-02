@@ -34,8 +34,8 @@ func ToUserCoreList(aList []ArticleLikes) []users.Core {
 
 	return convertedUser
 }
-func ToArticleCoreList(aList []ArticleLikes) []articles.Core {
-	convertedArticle := []articles.Core{}
+func ToArticleCoreList(aList []ArticleLikes) []articles.ArticleCore {
+	convertedArticle := []articles.ArticleCore{}
 
 	for _, article := range aList {
 		convertedArticle = append(convertedArticle, articleData.ToArticleCore(article.Article))

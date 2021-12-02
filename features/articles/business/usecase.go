@@ -1,7 +1,6 @@
 package business
 
 import (
-	"fmt"
 	"prog/features/articles"
 )
 
@@ -13,21 +12,26 @@ func NewArticleBusiness(articleData articles.Data) articles.Business {
 	return &articleUsecase{ArticleData: articleData}
 }
 
-func (uu *articleUsecase) CreateArticle(data articles.Core, userId int) error {
-	tags, err := uu.ArticleData.CreateTags(data.Tags)
+func (uu *articleUsecase) CreateTags(tags []articles.TagCore) ([]articles.TagCore, error) {
+	tags, err := uu.ArticleData.CreateTags(tags)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	err = uu.ArticleData.CreateArticle(data, userId, tags)
+	return tags, nil
+}
+
+func (uu *articleUsecase) CreateArticle(data articles.ArticleCore) error {
+
+	err := uu.ArticleData.CreateArticle(data)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (uu *articleUsecase) GetAllArticles() ([]articles.Core, error) {
+func (uu *articleUsecase) GetAllArticles() ([]articles.ArticleCore, error) {
 	articles, err := uu.ArticleData.GetAllArticles()
 	if err != nil {
 		return nil, err
@@ -36,23 +40,19 @@ func (uu *articleUsecase) GetAllArticles() ([]articles.Core, error) {
 	return articles, nil
 }
 
-func (us *articleUsecase) GetArticleById(articleId int) (articles.Core, error) {
+func (us *articleUsecase) GetArticleById(articleId int) (articles.ArticleCore, error) {
 	articleData, err := us.ArticleData.GetArticleById(articleId)
 
 	if err != nil {
-		return articles.Core{}, err
+		return articles.ArticleCore{}, err
 	}
 
 	return articleData, nil
 }
 
-func (uu *articleUsecase) UpdateArticleById(articleId int, data articles.Core, userId int) error {
-	err := uu.ArticleData.VerifyArticleOwner(articleId, userId)
-	if err != nil {
-		fmt.Print("Error disini")
-		return err
-	}
-	err = uu.ArticleData.UpdateArticleById(articleId, data)
+func (uu *articleUsecase) UpdateArticleById(articleId int, data articles.ArticleCore) error {
+
+	err := uu.ArticleData.UpdateArticleById(articleId, data)
 	if err != nil {
 		return err
 	}
@@ -60,13 +60,9 @@ func (uu *articleUsecase) UpdateArticleById(articleId int, data articles.Core, u
 	return nil
 }
 
-func (uu *articleUsecase) DeleteArticleById(articleId, userId int) error {
-	err := uu.ArticleData.VerifyArticleOwner(articleId, userId)
-	if err != nil {
-		return err
-	}
+func (uu *articleUsecase) DeleteArticleById(articleId int) error {
 
-	err = uu.ArticleData.DeleteArticleById(articleId)
+	err := uu.ArticleData.DeleteArticleById(articleId)
 	if err != nil {
 		return err
 	}
@@ -74,11 +70,20 @@ func (uu *articleUsecase) DeleteArticleById(articleId, userId int) error {
 	return nil
 }
 
-func (uu *articleUsecase) GetAllUserArticles(userId int) ([]articles.Core, error) {
+func (uu *articleUsecase) GetAllUserArticles(userId int) ([]articles.ArticleCore, error) {
 	articles, err := uu.ArticleData.GetAllUserArticles(userId)
 	if err != nil {
 		return nil, err
 	}
 
 	return articles, nil
+}
+
+func (uu *articleUsecase) VerifyArticleOwner(articleId, userId int) error {
+	err := uu.ArticleData.VerifyArticleOwner(articleId, userId)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

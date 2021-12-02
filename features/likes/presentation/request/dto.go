@@ -19,8 +19,8 @@ func toTagCoreList(requestTagsData []string) []articles.TagCore {
 	return convertedData
 }
 
-func (requestData *ArticleRequest) ToArticleCore() articles.Core {
-	return articles.Core{
+func (requestData *ArticleRequest) ToArticleCore() articles.ArticleCore {
+	return articles.ArticleCore{
 		Title:   requestData.Title,
 		Image:   requestData.Image,
 		Content: requestData.Content,

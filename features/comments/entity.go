@@ -12,7 +12,7 @@ type Core struct {
 	UserID    int
 	User      users.Core
 	ArticleID int
-	Article   articles.Core
+	Article   articles.ArticleCore
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

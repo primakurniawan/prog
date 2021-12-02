@@ -18,7 +18,7 @@ type SeriesCore struct {
 
 type ArticlesSeriesCore struct {
 	ArticleId int
-	Article   articles.Core
+	Article   articles.ArticleCore
 	SeriesId  int
 	Series    SeriesCore
 }
@@ -30,7 +30,7 @@ type Business interface {
 	AddArticleSeries(data ArticlesSeriesCore) error
 	GetAllSeries() ([]SeriesCore, error)
 	GetSeriesById(seriesId int) (SeriesCore, error)
-	GetAllArticleSeries(seriesId int) ([]articles.Core, error)
+	GetAllArticleSeries(seriesId int) ([]articles.ArticleCore, error)
 	VerifySeriesOwner(seriesId, userId int) error
 }
 
@@ -41,6 +41,6 @@ type Data interface {
 	AddArticleSeries(data ArticlesSeriesCore) error
 	GetAllSeries() ([]SeriesCore, error)
 	GetSeriesById(seriesId int) (SeriesCore, error)
-	GetAllArticleSeries(seriesId int) ([]articles.Core, error)
+	GetAllArticleSeries(seriesId int) ([]articles.ArticleCore, error)
 	VerifySeriesOwner(seriesId, userId int) error
 }

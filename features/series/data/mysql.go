@@ -99,7 +99,7 @@ func (ur *mysqlSeriesRepository) AddArticleSeries(data series.ArticlesSeriesCore
 
 }
 
-func (ur *mysqlSeriesRepository) GetAllArticleSeries(seriesId int) ([]articles.Core, error) {
+func (ur *mysqlSeriesRepository) GetAllArticleSeries(seriesId int) ([]articles.ArticleCore, error) {
 
 	var articlesSeries []ArticleSeries
 

@@ -30,7 +30,7 @@ func (alu *articleLikesUsecase) UnlikeArticle(articleId, userId int) error {
 	return nil
 }
 
-func (alu *articleLikesUsecase) GetLikedArticles(userId int) ([]articles.Core, error) {
+func (alu *articleLikesUsecase) GetLikedArticles(userId int) ([]articles.ArticleCore, error) {
 	articles, err := alu.LikeData.GetLikedArticles(userId)
 	if err != nil {
 		return nil, err

@@ -24,7 +24,7 @@ type UserResponse struct {
 	Image    string `json:"image"`
 }
 
-func ToArticleResponse(article articles.Core) ArticleResponse {
+func ToArticleResponse(article articles.ArticleCore) ArticleResponse {
 	return ArticleResponse{
 		ID:        article.ID,
 		Title:     article.Title,
@@ -54,7 +54,7 @@ func toTagsResponse(tags []articles.TagCore) []string {
 	return convertedTags
 }
 
-func ToArticleResponseList(articleList []articles.Core) []ArticleResponse {
+func ToArticleResponseList(articleList []articles.ArticleCore) []ArticleResponse {
 	convertedArticle := []ArticleResponse{}
 	for _, article := range articleList {
 		convertedArticle = append(convertedArticle, ToArticleResponse(article))

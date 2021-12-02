@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"prog/features/articles"
 	"prog/features/likes"
 	"prog/features/users"
@@ -56,13 +55,12 @@ func (alr *mysqlArticleLikesRepository) GetLikingUsers(articleId int) ([]users.C
 	return ToUserCoreList(articleLikes), nil
 }
 
-func (alr *mysqlArticleLikesRepository) GetLikedArticles(userId int) ([]articles.Core, error) {
+func (alr *mysqlArticleLikesRepository) GetLikedArticles(userId int) ([]articles.ArticleCore, error) {
 
 	var articleLikes []ArticleLikes
 	err := alr.Conn.Preload(clause.Associations).Joins("Article").Where("article_likes.user_id = ?", userId).Find(&articleLikes).Error
 	if err != nil {
-		return []articles.Core{}, err
+		return []articles.ArticleCore{}, err
 	}
-	fmt.Print(articleLikes[0].ArticleID)
 	return ToArticleCoreList(articleLikes), nil
 }

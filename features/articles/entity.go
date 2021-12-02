@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type Core struct {
+type ArticleCore struct {
 	ID        int
 	Title     string
 	Image     string
@@ -23,21 +23,23 @@ type TagCore struct {
 }
 
 type Business interface {
-	CreateArticle(data Core, userId int) error
-	GetAllArticles() ([]Core, error)
-	GetArticleById(articleId int) (Core, error)
-	UpdateArticleById(articleId int, data Core, userId int) error
-	DeleteArticleById(articleId int, userId int) error
-	GetAllUserArticles(userId int) ([]Core, error)
+	CreateTags(tags []TagCore) ([]TagCore, error)
+	CreateArticle(data ArticleCore) error
+	GetAllArticles() ([]ArticleCore, error)
+	GetArticleById(articleId int) (ArticleCore, error)
+	UpdateArticleById(articleId int, data ArticleCore) error
+	DeleteArticleById(articleId int) error
+	VerifyArticleOwner(articleId int, userId int) error
+	GetAllUserArticles(userId int) ([]ArticleCore, error)
 }
 
 type Data interface {
 	CreateTags(tags []TagCore) ([]TagCore, error)
-	CreateArticle(data Core, userId int, tags []TagCore) error
-	GetAllArticles() ([]Core, error)
-	GetArticleById(articleId int) (Core, error)
-	UpdateArticleById(articleId int, data Core) error
+	CreateArticle(data ArticleCore) error
+	GetAllArticles() ([]ArticleCore, error)
+	GetArticleById(articleId int) (ArticleCore, error)
+	UpdateArticleById(articleId int, data ArticleCore) error
 	DeleteArticleById(articleId int) error
 	VerifyArticleOwner(articleId int, userId int) error
-	GetAllUserArticles(userId int) ([]Core, error)
+	GetAllUserArticles(userId int) ([]ArticleCore, error)
 }

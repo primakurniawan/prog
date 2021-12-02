@@ -23,14 +23,7 @@ func NewArticleHandler(articleBusiness articles.Business) *ArticleHandler {
 func (uh *ArticleHandler) CreateArticleHandler(e echo.Context) error {
 	articleData := request.ArticleRequest{}
 
-	err := e.Bind(&articleData)
-	if err != nil {
-		return e.JSON(http.StatusBadRequest, map[string]interface{}{
-			"status":  "fail",
-			"message": "can not create article",
-			"err":     err.Error(),
-		})
-	}
+	e.Bind(&articleData)
 
 	userId, err := middlewares.VerifyAccessToken(e)
 	if err != nil {
@@ -41,7 +34,16 @@ func (uh *ArticleHandler) CreateArticleHandler(e echo.Context) error {
 		})
 	}
 
-	err = uh.ArticleBusiness.CreateArticle(articleData.ToArticleCore(), userId)
+	tags, err := uh.ArticleBusiness.CreateTags(articleData.ToTagCoreList())
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not create article",
+			"err":     err.Error(),
+		})
+	}
+
+	err = uh.ArticleBusiness.CreateArticle(articleData.ToArticleCore(tags, userId))
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",
@@ -100,13 +102,23 @@ func (ah *ArticleHandler) GetArticleByIdHandler(e echo.Context) error {
 }
 
 func (ah *ArticleHandler) UpdateArticleByIdHandler(e echo.Context) error {
-	articleId, _ := strconv.Atoi(e.Param("articleId"))
-	articleData := request.ArticleRequest{}
-	err := e.Bind(&articleData)
+	articleId, err := strconv.Atoi(e.Param("articleId"))
 	if err != nil {
 		return e.JSON(http.StatusBadRequest, map[string]interface{}{
 			"status":  "fail",
 			"message": "can not update article",
+			"err":     err.Error(),
+		})
+	}
+
+	articleData := request.ArticleRequest{}
+	e.Bind(&articleData)
+
+	tags, err := ah.ArticleBusiness.CreateTags(articleData.ToTagCoreList())
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not create article",
 			"err":     err.Error(),
 		})
 	}
@@ -120,7 +132,16 @@ func (ah *ArticleHandler) UpdateArticleByIdHandler(e echo.Context) error {
 		})
 	}
 
-	err = ah.ArticleBusiness.UpdateArticleById(articleId, articleData.ToArticleCore(), userId)
+	err = ah.ArticleBusiness.VerifyArticleOwner(articleId, userId)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not create article",
+			"err":     err.Error(),
+		})
+	}
+
+	err = ah.ArticleBusiness.UpdateArticleById(articleId, articleData.ToArticleCore(tags, userId))
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",
@@ -137,7 +158,14 @@ func (ah *ArticleHandler) UpdateArticleByIdHandler(e echo.Context) error {
 }
 
 func (uh *ArticleHandler) DeleteArticleByIdHandler(e echo.Context) error {
-	articleId, _ := strconv.Atoi(e.Param("articleId"))
+	articleId, err := strconv.Atoi(e.Param("articleId"))
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not delete article",
+			"err":     err.Error(),
+		})
+	}
 
 	userId, err := middlewares.VerifyAccessToken(e)
 	if err != nil {
@@ -148,7 +176,16 @@ func (uh *ArticleHandler) DeleteArticleByIdHandler(e echo.Context) error {
 		})
 	}
 
-	err = uh.ArticleBusiness.DeleteArticleById(articleId, userId)
+	err = uh.ArticleBusiness.VerifyArticleOwner(articleId, userId)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not create article",
+			"err":     err.Error(),
+		})
+	}
+
+	err = uh.ArticleBusiness.DeleteArticleById(articleId)
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",

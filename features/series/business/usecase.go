@@ -67,7 +67,7 @@ func (uu *seriesUsecase) GetSeriesById(seriesId int) (series.SeriesCore, error) 
 	return seriesData, nil
 }
 
-func (uu *seriesUsecase) GetAllArticleSeries(seriesId int) ([]articles.Core, error) {
+func (uu *seriesUsecase) GetAllArticleSeries(seriesId int) ([]articles.ArticleCore, error) {
 	articles, err := uu.SeriesData.GetAllArticleSeries(seriesId)
 	if err != nil {
 		return nil, err

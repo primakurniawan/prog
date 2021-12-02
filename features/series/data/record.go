@@ -66,8 +66,8 @@ func toSeriesCoreList(sList []Series) []series.SeriesCore {
 	return convertedSeries
 }
 
-func ToArticleCoreList(aList []ArticleSeries) []articles.Core {
-	convertedArticle := []articles.Core{}
+func ToArticleCoreList(aList []ArticleSeries) []articles.ArticleCore {
+	convertedArticle := []articles.ArticleCore{}
 
 	for _, articleSeries := range aList {
 		convertedArticle = append(convertedArticle, articleData.ToArticleCore(articleSeries.Article))

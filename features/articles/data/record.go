@@ -34,7 +34,7 @@ func ToTagRecord(tag articles.TagCore) Tag {
 	}
 }
 
-func ToArticleRecord(article articles.Core) Article {
+func ToArticleRecord(article articles.ArticleCore) Article {
 	return Article{
 		ID:        article.ID,
 		Title:     article.Title,
@@ -48,8 +48,8 @@ func ToArticleRecord(article articles.Core) Article {
 	}
 }
 
-func ToArticleCore(article Article) articles.Core {
-	return articles.Core{
+func ToArticleCore(article Article) articles.ArticleCore {
+	return articles.ArticleCore{
 		ID:        article.ID,
 		Title:     article.Title,
 		Image:     article.Image,
@@ -68,8 +68,8 @@ func ToTagCore(tag Tag) articles.TagCore {
 	}
 }
 
-func ToArticleCoreList(aList []Article) []articles.Core {
-	convertedArticle := []articles.Core{}
+func ToArticleCoreList(aList []Article) []articles.ArticleCore {
+	convertedArticle := []articles.ArticleCore{}
 
 	for _, article := range aList {
 		convertedArticle = append(convertedArticle, ToArticleCore(article))
