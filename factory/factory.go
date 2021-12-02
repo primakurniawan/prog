@@ -78,7 +78,7 @@ func Init() Presenter {
 	// comments layer
 	commentsData := commentsData.NewMysqlCommentsRepository(db.DB)
 	commentsBusiness := commentsBusiness.NewCommentsBusiness(commentsData)
-	commentsPresentation := commentsPresentation.NewCommentHandler(commentsBusiness)
+	commentsPresentation := commentsPresentation.NewCommentHandler(commentsBusiness, articleBusiness)
 
 	// series layer
 	seriesData := seriesData.NewMysqlSeriesRepository(db.DB)

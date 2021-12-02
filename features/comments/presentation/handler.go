@@ -2,6 +2,7 @@ package presentation
 
 import (
 	"net/http"
+	"prog/features/articles"
 	"prog/features/comments"
 	"prog/features/comments/presentation/request"
 	"prog/features/comments/presentation/response"
@@ -14,10 +15,11 @@ import (
 
 type CommentHandler struct {
 	CommentBusiness comments.Business
+	ArticleBusiness articles.Business
 }
 
-func NewCommentHandler(commentBusiness comments.Business) *CommentHandler {
-	return &CommentHandler{CommentBusiness: commentBusiness}
+func NewCommentHandler(commentBusiness comments.Business, articleBusiness articles.Business) *CommentHandler {
+	return &CommentHandler{CommentBusiness: commentBusiness, ArticleBusiness: articleBusiness}
 }
 
 func (uh *CommentHandler) AddComment(e echo.Context) error {
@@ -43,7 +45,7 @@ func (uh *CommentHandler) AddComment(e echo.Context) error {
 	comment := request.CommentRequest{}
 	e.Bind(&comment)
 
-	err = uh.CommentBusiness.AddComment(comment.Content, articleId, userId)
+	err = uh.CommentBusiness.AddComment(comment.ToCommentCore(articleId, userId))
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",
@@ -59,7 +61,16 @@ func (uh *CommentHandler) AddComment(e echo.Context) error {
 }
 
 func (uh *CommentHandler) UpdateComment(e echo.Context) error {
-	_, err := strconv.Atoi(e.Param("articleId"))
+	articleId, err := strconv.Atoi(e.Param("articleId"))
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not delete comment",
+			"err":     "articleId must be integer",
+		})
+	}
+
+	_, err = uh.ArticleBusiness.GetArticleById(articleId)
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",
@@ -86,9 +97,18 @@ func (uh *CommentHandler) UpdateComment(e echo.Context) error {
 		})
 	}
 
+	err = uh.CommentBusiness.VerifyCommentOwner(commentId, userId)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not update comment",
+			"err":     err.Error(),
+		})
+	}
+
 	comment := request.CommentRequest{}
 	e.Bind(&comment)
-	err = uh.CommentBusiness.UpdateComment(comment.Content, commentId, userId)
+	err = uh.CommentBusiness.UpdateComment(commentId, comment.ToCommentCore(articleId, userId))
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",
@@ -105,7 +125,16 @@ func (uh *CommentHandler) UpdateComment(e echo.Context) error {
 }
 
 func (uh *CommentHandler) DeleteComment(e echo.Context) error {
-	_, err := strconv.Atoi(e.Param("articleId"))
+	articleId, err := strconv.Atoi(e.Param("articleId"))
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not delete comment",
+			"err":     "articleId must be integer",
+		})
+	}
+
+	_, err = uh.ArticleBusiness.GetArticleById(articleId)
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",
@@ -132,7 +161,16 @@ func (uh *CommentHandler) DeleteComment(e echo.Context) error {
 		})
 	}
 
-	err = uh.CommentBusiness.DeleteComment(commentId, userId)
+	err = uh.CommentBusiness.VerifyCommentOwner(commentId, userId)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not delete comment",
+			"err":     err.Error(),
+		})
+	}
+
+	err = uh.CommentBusiness.DeleteComment(commentId)
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",

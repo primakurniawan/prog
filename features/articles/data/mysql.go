@@ -72,6 +72,11 @@ func (ar *mysqlArticleRepository) UpdateArticleById(articleId int, data articles
 	article := ToArticleRecord(data)
 	article.ID = articleId
 
+	err := ar.Conn.First(&article, articleId).Error
+	if err != nil {
+		return err
+	}
+
 	if data.Title != "" {
 		article.Title = data.Title
 	}
@@ -82,7 +87,7 @@ func (ar *mysqlArticleRepository) UpdateArticleById(articleId int, data articles
 		article.Content = data.Content
 	}
 
-	err := ar.Conn.Save(&article).Error
+	err = ar.Conn.Save(&article).Error
 	if err != nil {
 		return err
 	}

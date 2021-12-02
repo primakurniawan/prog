@@ -17,12 +17,8 @@ func NewMysqlCommentsRepository(conn *gorm.DB) comments.Data {
 	}
 }
 
-func (cr *mysqlCommentsRepository) AddComment(content string, articleId, userId int) error {
-	comment := ToCommentsRecord(comments.Core{
-		Content:   content,
-		ArticleID: articleId,
-		UserID:    userId,
-	})
+func (cr *mysqlCommentsRepository) AddComment(data comments.Core) error {
+	comment := ToCommentsRecord(data)
 
 	err := cr.Conn.Create(&comment).Error
 	if err != nil {
@@ -32,14 +28,19 @@ func (cr *mysqlCommentsRepository) AddComment(content string, articleId, userId 
 
 }
 
-func (cr *mysqlCommentsRepository) UpdateComment(commentId int, content string) error {
-	comment := Comment{}
+func (cr *mysqlCommentsRepository) UpdateComment(commentId int, data comments.Core) error {
+	comment := ToCommentsRecord(data)
+	comment.ID = commentId
 
 	err := cr.Conn.First(&comment, commentId).Error
 	if err != nil {
 		return err
 	}
-	comment.Content = content
+
+	if data.Content != "" {
+		comment.Content = data.Content
+	}
+
 	err = cr.Conn.Save(&comment).Error
 	if err != nil {
 		return err

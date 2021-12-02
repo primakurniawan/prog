@@ -18,16 +18,17 @@ type Core struct {
 }
 
 type Business interface {
-	AddComment(content string, articleId, userId int) error
+	AddComment(data Core) error
 	GetArticleComments(articleId int) ([]Core, error)
-	UpdateComment(content string, commentId, userId int) error
-	DeleteComment(commentId, userId int) error
+	DeleteComment(commentId int) error
+	UpdateComment(commentId int, data Core) error
+	VerifyCommentOwner(commentId, userId int) error
 }
 
 type Data interface {
-	AddComment(content string, articleId, userId int) error
+	AddComment(data Core) error
 	GetArticleComments(articleId int) ([]Core, error)
 	DeleteComment(commentId int) error
-	UpdateComment(commentId int, content string) error
+	UpdateComment(commentId int, data Core) error
 	VerifyCommentOwner(commentId, userId int) error
 }
