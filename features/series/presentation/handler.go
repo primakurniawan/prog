@@ -165,6 +165,31 @@ func (sh *SeriesHandler) GetAllSeriesHandler(e echo.Context) error {
 
 }
 
+func (sh *SeriesHandler) GetSeriesByIdHandler(e echo.Context) error {
+	seriesId, err := strconv.Atoi(e.Param("seriesId"))
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not get series",
+			"err":     err.Error(),
+		})
+	}
+	series, err := sh.SeriesBusiness.GetSeriesById(seriesId)
+	if err != nil {
+		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"status":  "fail",
+			"message": "can not get series",
+			"err":     err.Error(),
+		})
+	}
+
+	return e.JSON(http.StatusOK, map[string]interface{}{
+		"status": "success",
+		"data":   response.ToSeriesResponse(series),
+	})
+
+}
+
 func (sh *SeriesHandler) GetAllArticlesSeriesHandler(e echo.Context) error {
 	seriesId, err := strconv.Atoi(e.Param("seriesId"))
 	if err != nil {

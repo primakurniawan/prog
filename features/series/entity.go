@@ -1,46 +1,26 @@
 package series
 
-import "time"
+import (
+	"prog/features/articles"
+	"prog/features/users"
+	"time"
+)
 
 type SeriesCore struct {
 	ID          int
 	Title       string
 	Description string
 	UserID      int
-	User        UserCore
+	User        users.Core
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
 
 type ArticlesSeriesCore struct {
 	ArticleId int
-	Article   ArticleCore
+	Article   articles.Core
 	SeriesId  int
 	Series    SeriesCore
-}
-
-type UserCore struct {
-	ID       int
-	Email    string
-	Fullname string
-	Image    string
-}
-
-type ArticleCore struct {
-	ID        int
-	Title     string
-	Image     string
-	Content   string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	UserId    int
-	User      UserCore
-	Tags      []TagCore
-}
-
-type TagCore struct {
-	ID    int
-	Title string
 }
 
 type Business interface {
@@ -49,7 +29,8 @@ type Business interface {
 	UpdateSeriesById(seriesId int, data SeriesCore) error
 	AddArticleSeries(data ArticlesSeriesCore) error
 	GetAllSeries() ([]SeriesCore, error)
-	GetAllArticleSeries(seriesId int) ([]ArticleCore, error)
+	GetSeriesById(seriesId int) (SeriesCore, error)
+	GetAllArticleSeries(seriesId int) ([]articles.Core, error)
 	VerifySeriesOwner(seriesId, userId int) error
 }
 
@@ -59,6 +40,7 @@ type Data interface {
 	UpdateSeriesById(seriesId int, data SeriesCore) error
 	AddArticleSeries(data ArticlesSeriesCore) error
 	GetAllSeries() ([]SeriesCore, error)
-	GetAllArticleSeries(seriesId int) ([]ArticleCore, error)
+	GetSeriesById(seriesId int) (SeriesCore, error)
+	GetAllArticleSeries(seriesId int) ([]articles.Core, error)
 	VerifySeriesOwner(seriesId, userId int) error
 }

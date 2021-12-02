@@ -1,6 +1,7 @@
 package business
 
 import (
+	"prog/features/articles"
 	"prog/features/series"
 )
 
@@ -57,7 +58,16 @@ func (uu *seriesUsecase) GetAllSeries() ([]series.SeriesCore, error) {
 	return series, nil
 }
 
-func (uu *seriesUsecase) GetAllArticleSeries(seriesId int) ([]series.ArticleCore, error) {
+func (uu *seriesUsecase) GetSeriesById(seriesId int) (series.SeriesCore, error) {
+	seriesData, err := uu.SeriesData.GetSeriesById(seriesId)
+	if err != nil {
+		return series.SeriesCore{}, err
+	}
+
+	return seriesData, nil
+}
+
+func (uu *seriesUsecase) GetAllArticleSeries(seriesId int) ([]articles.Core, error) {
 	articles, err := uu.SeriesData.GetAllArticleSeries(seriesId)
 	if err != nil {
 		return nil, err

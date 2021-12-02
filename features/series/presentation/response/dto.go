@@ -1,7 +1,9 @@
 package response
 
 import (
+	"prog/features/articles"
 	"prog/features/series"
+	"prog/features/users"
 	"time"
 )
 
@@ -39,7 +41,7 @@ func ToSeriesResponse(series series.SeriesCore) SeriesResponse {
 	}
 }
 
-func ToUserResponse(user series.UserCore) UserResponse {
+func ToUserResponse(user users.Core) UserResponse {
 	return UserResponse{
 		ID:       user.ID,
 		Email:    user.Email,
@@ -48,7 +50,7 @@ func ToUserResponse(user series.UserCore) UserResponse {
 	}
 }
 
-func ToArticleResponse(article series.ArticleCore) ArticleResponse {
+func ToArticleResponse(article articles.Core) ArticleResponse {
 	return ArticleResponse{
 		ID:        article.ID,
 		Title:     article.Title,
@@ -61,7 +63,7 @@ func ToArticleResponse(article series.ArticleCore) ArticleResponse {
 	}
 }
 
-func ToTagsResponse(tags []series.TagCore) []string {
+func ToTagsResponse(tags []articles.TagCore) []string {
 	convertedTags := make([]string, 0, len(tags))
 	for _, v := range tags {
 		convertedTags = append(convertedTags, v.Title)
@@ -78,7 +80,7 @@ func ToSeriesResponseList(seriesList []series.SeriesCore) []SeriesResponse {
 	return convertedSeries
 }
 
-func ToArticleResponseList(articleList []series.ArticleCore) []ArticleResponse {
+func ToArticleResponseList(articleList []articles.Core) []ArticleResponse {
 	convertedArticle := []ArticleResponse{}
 	for _, article := range articleList {
 		convertedArticle = append(convertedArticle, ToArticleResponse(article))

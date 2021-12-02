@@ -1,6 +1,7 @@
 package data
 
 import (
+	"prog/features/articles"
 	"prog/features/series"
 
 	"gorm.io/gorm"
@@ -44,8 +45,14 @@ func (ur *mysqlSeriesRepository) UpdateSeriesById(seriesId int, data series.Seri
 	if err != nil {
 		return err
 	}
-	series.Title = data.Title
-	series.Description = data.Description
+
+	if data.Title != "" {
+		series.Title = data.Title
+	}
+	if data.Description != "" {
+		series.Description = data.Description
+	}
+
 	err = ur.Conn.Save(series).Error
 	if err != nil {
 		return err
@@ -58,13 +65,24 @@ func (ur *mysqlSeriesRepository) UpdateSeriesById(seriesId int, data series.Seri
 func (ur *mysqlSeriesRepository) GetAllSeries() ([]series.SeriesCore, error) {
 	var series []Series
 
-	err := ur.Conn.Find(&series).Error
+	err := ur.Conn.Joins("User").Find(&series).Error
 	if err != nil {
 		return nil, err
 	}
 
 	return toSeriesCoreList(series), nil
 
+}
+
+func (ur *mysqlSeriesRepository) GetSeriesById(seriesId int) (series.SeriesCore, error) {
+	var seriesData Series
+
+	err := ur.Conn.Joins("User").First(&seriesData, seriesId).Error
+	if err != nil {
+		return series.SeriesCore{}, err
+	}
+
+	return toSeriesCore(seriesData), nil
 }
 
 func (ur *mysqlSeriesRepository) AddArticleSeries(data series.ArticlesSeriesCore) error {
@@ -81,7 +99,7 @@ func (ur *mysqlSeriesRepository) AddArticleSeries(data series.ArticlesSeriesCore
 
 }
 
-func (ur *mysqlSeriesRepository) GetAllArticleSeries(seriesId int) ([]series.ArticleCore, error) {
+func (ur *mysqlSeriesRepository) GetAllArticleSeries(seriesId int) ([]articles.Core, error) {
 
 	var articlesSeries []ArticleSeries
 
@@ -91,7 +109,7 @@ func (ur *mysqlSeriesRepository) GetAllArticleSeries(seriesId int) ([]series.Art
 		return nil, err
 	}
 
-	return toArticleCoreList(articlesSeries), nil
+	return ToArticleCoreList(articlesSeries), nil
 
 }
 

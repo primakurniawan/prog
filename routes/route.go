@@ -59,6 +59,7 @@ func New() *echo.Echo {
 	eSeries := e.Group("/series")
 	eSeries.GET("", presenter.SeriesHandler.GetAllSeriesHandler)
 	eSeries.POST("", presenter.SeriesHandler.CreateSeriesHandler, middleware.JWTWithConfig(configJWT))
+	eSeries.GET("/:seriesId", presenter.SeriesHandler.GetSeriesByIdHandler)
 	eSeries.DELETE("/:seriesId", presenter.SeriesHandler.DeleteSeriesHandler, middleware.JWTWithConfig(configJWT))
 	eSeries.PATCH("/:seriesId", presenter.SeriesHandler.UpdateSeriesByIdHandler, middleware.JWTWithConfig(configJWT))
 	eSeries.POST("/:seriesId", presenter.SeriesHandler.AddArticleSeriesHandler, middleware.JWTWithConfig(configJWT))
