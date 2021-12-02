@@ -38,7 +38,7 @@ func New() *echo.Echo {
 
 	eUser := e.Group("/user")
 	eUser.Use(middleware.JWTWithConfig(configJWT))
-	// eUser.GET("", presenter.UserHandler.GetUserByIdHandler)
+	eUser.GET("", presenter.UserHandler.GetUserByIdHandler)
 	eUser.PATCH("", presenter.UserHandler.UpdateUserHandler)
 	eUser.DELETE("", presenter.UserHandler.DeleteUserHandler)
 
