@@ -18,7 +18,7 @@ func NewMysqlCommentsRepository(conn *gorm.DB) comments.Data {
 }
 
 func (cr *mysqlCommentsRepository) AddComment(content string, articleId, userId int) error {
-	comment := toCommentsRecord(comments.Core{
+	comment := ToCommentsRecord(comments.Core{
 		Content:   content,
 		ArticleID: articleId,
 		UserID:    userId,
@@ -62,11 +62,11 @@ func (cr *mysqlCommentsRepository) DeleteComment(commentId int) error {
 func (cr *mysqlCommentsRepository) GetArticleComments(articleId int) ([]comments.Core, error) {
 
 	commentsArticle := []Comment{}
-	err := cr.Conn.Where("article_id = ?", articleId).Find(&commentsArticle).Error
+	err := cr.Conn.Joins("User").Where("article_id = ?", articleId).Find(&commentsArticle).Error
 	if err != nil {
 		return []comments.Core{}, err
 	}
-	return toCommentCoreList(commentsArticle), nil
+	return ToCommentCoreList(commentsArticle), nil
 
 }
 

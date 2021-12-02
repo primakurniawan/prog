@@ -2,22 +2,16 @@ package response
 
 import (
 	"prog/features/comments"
+	userResponse "prog/features/users/presentation/response"
 	"time"
 )
 
 type CommentResponse struct {
-	ID        int          `json:"id"`
-	Content   string       `json:"content"`
-	CreatedAt time.Time    `json:"created_at"`
-	UpdatedAt time.Time    `json:"updated_at"`
-	User      UserResponse `json:"user"`
-}
-
-type UserResponse struct {
-	ID       int    `json:"id"`
-	Email    string `json:"email"`
-	Fullname string `json:"fullname"`
-	Image    string `json:"image"`
+	ID        int                       `json:"id"`
+	Content   string                    `json:"content"`
+	CreatedAt time.Time                 `json:"created_at"`
+	UpdatedAt time.Time                 `json:"updated_at"`
+	User      userResponse.UserResponse `json:"user"`
 }
 
 func ToCommentResponse(comment comments.Core) CommentResponse {
@@ -26,16 +20,7 @@ func ToCommentResponse(comment comments.Core) CommentResponse {
 		Content:   comment.Content,
 		CreatedAt: comment.CreatedAt,
 		UpdatedAt: comment.UpdatedAt,
-		User:      toUserResponse(comment.User),
-	}
-}
-
-func toUserResponse(user comments.UserCore) UserResponse {
-	return UserResponse{
-		ID:       user.ID,
-		Email:    user.Email,
-		Fullname: user.Fullname,
-		Image:    user.Image,
+		User:      userResponse.ToUserResponse(comment.User),
 	}
 }
 

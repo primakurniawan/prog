@@ -1,40 +1,20 @@
 package comments
 
-import "time"
+import (
+	"prog/features/articles"
+	"prog/features/users"
+	"time"
+)
 
 type Core struct {
 	ID        int
 	Content   string
 	UserID    int
-	User      UserCore
+	User      users.Core
 	ArticleID int
-	Article   ArticleCore
+	Article   articles.Core
 	CreatedAt time.Time
 	UpdatedAt time.Time
-}
-
-type UserCore struct {
-	ID       int
-	Email    string
-	Fullname string
-	Image    string
-}
-
-type ArticleCore struct {
-	ID        int
-	Title     string
-	Image     string
-	Content   string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	UserId    int
-	User      UserCore
-	Tags      []TagCore
-}
-
-type TagCore struct {
-	ID    int
-	Title string
 }
 
 type Business interface {
