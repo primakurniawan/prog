@@ -3,7 +3,8 @@ package presentation
 import (
 	"net/http"
 	"prog/features/follows"
-	"prog/features/follows/presentation/response"
+	"prog/features/follows/presentation/request"
+	userResponse "prog/features/users/presentation/response"
 	"prog/middlewares"
 
 	"strconv"
@@ -37,7 +38,15 @@ func (uh *FollowsHandler) FollowUser(e echo.Context) error {
 			"err":     err.Error(),
 		})
 	}
-	err = uh.FollowsBusiness.FollowUser(followingUserId, followerUserId)
+
+	follow := request.FollowRequest{
+		FollowingUserId: followingUserId,
+		FollowersUserId: followerUserId,
+	}
+
+	e.Bind(&follow)
+
+	err = uh.FollowsBusiness.FollowUser(follow.ToFollowCore())
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",
@@ -70,7 +79,15 @@ func (uh *FollowsHandler) UnfollowUser(e echo.Context) error {
 			"err":     err.Error(),
 		})
 	}
-	err = uh.FollowsBusiness.UnfollowUser(followingUserId, followerUserId)
+
+	follow := request.FollowRequest{
+		FollowingUserId: followingUserId,
+		FollowersUserId: followerUserId,
+	}
+
+	e.Bind(&follow)
+
+	err = uh.FollowsBusiness.UnfollowUser(follow.ToFollowCore())
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"status":  "fail",
@@ -105,7 +122,7 @@ func (alh *FollowsHandler) GetFollowingUsers(e echo.Context) error {
 
 	return e.JSON(http.StatusOK, map[string]interface{}{
 		"status": "success",
-		"data":   response.ToUserResponseList(data),
+		"data":   userResponse.ToUserResponseList(data),
 	})
 
 }
@@ -130,7 +147,7 @@ func (alh *FollowsHandler) GetFollowersUsers(e echo.Context) error {
 
 	return e.JSON(http.StatusOK, map[string]interface{}{
 		"status": "success",
-		"data":   response.ToUserResponseList(data),
+		"data":   userResponse.ToUserResponseList(data),
 	})
 
 }

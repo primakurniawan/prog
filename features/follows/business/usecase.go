@@ -2,6 +2,7 @@ package business
 
 import (
 	"prog/features/follows"
+	"prog/features/users"
 )
 
 type FollowsUsecase struct {
@@ -12,23 +13,23 @@ func NewFollowsBusiness(followsData follows.Data) follows.Business {
 	return &FollowsUsecase{FollowData: followsData}
 }
 
-func (alu *FollowsUsecase) FollowUser(followingUserId, followersUserId int) error {
-	err := alu.FollowData.FollowUser(followingUserId, followersUserId)
+func (alu *FollowsUsecase) FollowUser(data follows.Core) error {
+	err := alu.FollowData.FollowUser(data)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (alu *FollowsUsecase) UnfollowUser(followingUserId, followersUserId int) error {
-	err := alu.FollowData.UnfollowUser(followingUserId, followersUserId)
+func (alu *FollowsUsecase) UnfollowUser(data follows.Core) error {
+	err := alu.FollowData.UnfollowUser(data)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (alu *FollowsUsecase) GetFollowingUsers(followersUserId int) ([]follows.UserCore, error) {
+func (alu *FollowsUsecase) GetFollowingUsers(followersUserId int) ([]users.Core, error) {
 	data, err := alu.FollowData.GetFollowingUsers(followersUserId)
 	if err != nil {
 		return nil, err
@@ -36,7 +37,7 @@ func (alu *FollowsUsecase) GetFollowingUsers(followersUserId int) ([]follows.Use
 	return data, nil
 }
 
-func (alu *FollowsUsecase) GetFollowersUsers(followingUserId int) ([]follows.UserCore, error) {
+func (alu *FollowsUsecase) GetFollowersUsers(followingUserId int) ([]users.Core, error) {
 	data, err := alu.FollowData.GetFollowersUsers(followingUserId)
 	if err != nil {
 		return nil, err

@@ -1,29 +1,24 @@
 package follows
 
+import "prog/features/users"
+
 type Core struct {
 	FollowingUserId int
-	FollowingUser   UserCore
+	FollowingUser   users.Core
 	FollowersUserId int
-	FollowersUser   UserCore
-}
-
-type UserCore struct {
-	ID       int
-	Email    string
-	Fullname string
-	Image    string
+	FollowersUser   users.Core
 }
 
 type Business interface {
-	FollowUser(followingUserId, followersUserId int) error
-	GetFollowingUsers(followersUserId int) ([]UserCore, error)
-	GetFollowersUsers(followingUserId int) ([]UserCore, error)
-	UnfollowUser(followingUserId, followersUserId int) error
+	FollowUser(data Core) error
+	GetFollowingUsers(followersUserId int) ([]users.Core, error)
+	GetFollowersUsers(followingUserId int) ([]users.Core, error)
+	UnfollowUser(data Core) error
 }
 
 type Data interface {
-	FollowUser(followingUserId, followersUserId int) error
-	GetFollowingUsers(followersUserId int) ([]UserCore, error)
-	GetFollowersUsers(followingUserId int) ([]UserCore, error)
-	UnfollowUser(followingUserId, followersUserId int) error
+	FollowUser(data Core) error
+	GetFollowingUsers(followersUserId int) ([]users.Core, error)
+	GetFollowersUsers(followingUserId int) ([]users.Core, error)
+	UnfollowUser(data Core) error
 }

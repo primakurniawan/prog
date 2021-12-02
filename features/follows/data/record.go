@@ -3,6 +3,7 @@ package data
 import (
 	"prog/features/follows"
 	"prog/features/users"
+	userData "prog/features/users/data"
 
 	"gorm.io/gorm"
 )
@@ -11,59 +12,33 @@ type Follow struct {
 	gorm.Model
 	ID              int
 	FollowingUserId int
-	FollowingUser   User
+	FollowingUser   userData.User
 	FollowersUserId int
-	FollowersUser   User
+	FollowersUser   userData.User
 }
 
-type User struct {
-	gorm.Model
-	ID       int
-	Email    string
-	Fullname string
-	Image    string
-}
-
-func toFollowRecord(data follows.Core) Follow {
+func ToFollowRecord(data follows.Core) Follow {
 	return Follow{
 		FollowingUserId: data.FollowingUserId,
 		FollowersUserId: data.FollowersUserId,
 	}
 }
 
-func toUserRecord(user users.Core) User {
-	return User{
-		ID:       user.ID,
-		Email:    user.Email,
-		Fullname: user.Fullname,
-		Image:    user.Image,
-	}
-}
-
-func toUserCore(user User) follows.UserCore {
-	return follows.UserCore{
-		ID:       user.ID,
-		Email:    user.Email,
-		Fullname: user.Fullname,
-		Image:    user.Image,
-	}
-}
-
-func toUserFollowersCoreList(fList []Follow) []follows.UserCore {
-	convertedUser := []follows.UserCore{}
+func ToUserFollowersCoreList(fList []Follow) []users.Core {
+	convertedUser := []users.Core{}
 
 	for _, follow := range fList {
-		convertedUser = append(convertedUser, toUserCore(follow.FollowersUser))
+		convertedUser = append(convertedUser, userData.ToUserCore(follow.FollowersUser))
 	}
 
 	return convertedUser
 }
 
-func toUserFollowingCoreList(fList []Follow) []follows.UserCore {
-	convertedUser := []follows.UserCore{}
+func ToUserFollowingCoreList(fList []Follow) []users.Core {
+	convertedUser := []users.Core{}
 
 	for _, follow := range fList {
-		convertedUser = append(convertedUser, toUserCore(follow.FollowingUser))
+		convertedUser = append(convertedUser, userData.ToUserCore(follow.FollowingUser))
 	}
 
 	return convertedUser

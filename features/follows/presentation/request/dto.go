@@ -1,29 +1,15 @@
 package request
 
-import (
-	"prog/features/articles"
-)
+import "prog/features/follows"
 
-type ArticleRequest struct {
-	Title   string   `json:"title"`
-	Image   string   `json:"image"`
-	Content string   `json:"content"`
-	Tags    []string `json:"tags"`
+type FollowRequest struct {
+	FollowingUserId int `param:"userId"`
+	FollowersUserId int
 }
 
-func toTagCoreList(requestTagsData []string) []articles.TagCore {
-	convertedData := make([]articles.TagCore, 0, len(requestTagsData))
-	for _, v := range requestTagsData {
-		convertedData = append(convertedData, articles.TagCore{Title: v})
-	}
-	return convertedData
-}
-
-func (requestData *ArticleRequest) ToArticleCore() articles.Core {
-	return articles.Core{
-		Title:   requestData.Title,
-		Image:   requestData.Image,
-		Content: requestData.Content,
-		Tags:    toTagCoreList(requestData.Tags),
+func (data *FollowRequest) ToFollowCore() follows.Core {
+	return follows.Core{
+		FollowingUserId: data.FollowingUserId,
+		FollowersUserId: data.FollowersUserId,
 	}
 }

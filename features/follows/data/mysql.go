@@ -2,6 +2,7 @@ package data
 
 import (
 	"prog/features/follows"
+	"prog/features/users"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -17,13 +18,10 @@ func NewMysqlFollowRepository(conn *gorm.DB) follows.Data {
 	}
 }
 
-func (alr *mysqlFollowRepository) FollowUser(followingUserId, followersUserId int) error {
-	follows := Follow{
-		FollowingUserId: followingUserId,
-		FollowersUserId: followersUserId,
-	}
+func (alr *mysqlFollowRepository) FollowUser(data follows.Core) error {
+	follow := ToFollowRecord(data)
 
-	err := alr.Conn.Create(&follows).Error
+	err := alr.Conn.Create(&follow).Error
 	if err != nil {
 		return err
 	}
@@ -31,9 +29,9 @@ func (alr *mysqlFollowRepository) FollowUser(followingUserId, followersUserId in
 
 }
 
-func (alr *mysqlFollowRepository) UnfollowUser(followingUserId, followersUserId int) error {
+func (alr *mysqlFollowRepository) UnfollowUser(data follows.Core) error {
 
-	err := alr.Conn.Where("followers_user_id = ? AND following_user_id = ?", followersUserId, followingUserId).Delete(&Follow{}).Error
+	err := alr.Conn.Where("followers_user_id = ? AND following_user_id = ?", data.FollowersUserId, data.FollowingUserId).Delete(&Follow{}).Error
 	if err != nil {
 		return err
 	}
@@ -41,22 +39,22 @@ func (alr *mysqlFollowRepository) UnfollowUser(followingUserId, followersUserId 
 
 }
 
-func (alr *mysqlFollowRepository) GetFollowingUsers(followersUserId int) ([]follows.UserCore, error) {
+func (alr *mysqlFollowRepository) GetFollowingUsers(followersUserId int) ([]users.Core, error) {
 
 	var followingUsers []Follow
 	err := alr.Conn.Preload(clause.Associations).Joins("FollowersUser").Where("followers_user_id = ?", followersUserId).Find(&followingUsers).Error
 	if err != nil {
-		return []follows.UserCore{}, err
+		return []users.Core{}, err
 	}
-	return toUserFollowingCoreList(followingUsers), nil
+	return ToUserFollowingCoreList(followingUsers), nil
 }
 
-func (alr *mysqlFollowRepository) GetFollowersUsers(followingUserId int) ([]follows.UserCore, error) {
+func (alr *mysqlFollowRepository) GetFollowersUsers(followingUserId int) ([]users.Core, error) {
 
 	var followersUsers []Follow
-	err := alr.Conn.Preload(clause.Associations).Joins("FollowingUser").Where("followers_user_id = ?", followingUserId).Find(&followersUsers).Error
+	err := alr.Conn.Preload(clause.Associations).Joins("FollowingUser").Where("following_user_id = ?", followingUserId).Find(&followersUsers).Error
 	if err != nil {
-		return []follows.UserCore{}, err
+		return []users.Core{}, err
 	}
-	return toUserFollowersCoreList(followersUsers), nil
+	return ToUserFollowersCoreList(followersUsers), nil
 }
