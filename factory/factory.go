@@ -37,6 +37,11 @@ import (
 	seriesBusiness "prog/features/series/business"
 	seriesData "prog/features/series/data"
 	seriesPresentation "prog/features/series/presentation"
+
+	// news domain
+	newsBusiness "prog/features/news/business"
+	newsData "prog/features/news/data"
+	newsPresentation "prog/features/news/presentation"
 )
 
 type Presenter struct {
@@ -47,6 +52,7 @@ type Presenter struct {
 	FollowHandler       followsPresentation.FollowsHandler
 	CommentHandler      commentsPresentation.CommentHandler
 	SeriesHandler       seriesPresentation.SeriesHandler
+	NewsHandler         newsPresentation.NewsHandler
 }
 
 func Init() Presenter {
@@ -85,6 +91,11 @@ func Init() Presenter {
 	seriesBusiness := seriesBusiness.NewSeriesBusiness(seriesData)
 	seriesPresentation := seriesPresentation.NewSeriesHandler(seriesBusiness, articleBusiness)
 
+	// news layer
+	newsData := newsData.NewNewsApiRepository("https://newsapi.org/v2/top-headlines", "ab99f78a49634710b612960297c3f6a5")
+	newsBusiness := newsBusiness.NewApiService(newsData)
+	newsPresentation := newsPresentation.NewNewsHandler(newsBusiness)
+
 	return Presenter{
 		AuthHandler:         *authPresentation,
 		UserHandler:         *userPresentation,
@@ -93,5 +104,6 @@ func Init() Presenter {
 		FollowHandler:       *followsPresentation,
 		CommentHandler:      *commentsPresentation,
 		SeriesHandler:       *seriesPresentation,
+		NewsHandler:         *newsPresentation,
 	}
 }

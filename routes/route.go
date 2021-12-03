@@ -65,7 +65,8 @@ func New() *echo.Echo {
 	eSeries.POST("/:seriesId", presenter.SeriesHandler.AddArticleSeriesHandler, middleware.JWTWithConfig(configJWT))
 	eSeries.GET("/:seriesId/articles", presenter.SeriesHandler.GetAllArticlesSeriesHandler)
 
-	// middlewares.Logger(n)
+	e.GET("/news", presenter.NewsHandler.GetNewsHandler)
+
 	return n
 
 }
