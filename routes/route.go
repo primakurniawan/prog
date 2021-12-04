@@ -2,7 +2,7 @@ package routes
 
 import (
 	"net/http"
-	"prog/constants"
+	"os"
 	"prog/factory"
 	"prog/middlewares"
 
@@ -10,12 +10,14 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+var ACCESS_TOKEN_KEY string = os.Getenv("ACCESS_TOKEN_KEY")
+
 func New() *echo.Echo {
 	n := echo.New()
 	e := n.Group("/v1")
 
 	configJWT := middleware.JWTConfig{
-		SigningKey: []byte(constants.ACCESS_TOKEN_KEY),
+		SigningKey: []byte(ACCESS_TOKEN_KEY),
 		Claims:     &middlewares.JwtCustomClaims{},
 	}
 
