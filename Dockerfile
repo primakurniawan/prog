@@ -1,13 +1,18 @@
-FROM golang:1.17-alpine3.14 
+FROM golang:1.17.3-alpine3.14 AS builder
 
 WORKDIR /app
-
-COPY . .
-
+COPY ./ ./
 RUN go mod download
 
-RUN go build -o prog
+RUN go build -o main
+
+
+#2
+FROM alpine:3.14
+WORKDIR /app
+COPY --from=builder /app/main .
+COPY .env /app
 
 EXPOSE 8000
 
-CMD ["./prog"]
+CMD [ "./main" ]

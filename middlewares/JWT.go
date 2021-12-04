@@ -1,13 +1,16 @@
 package middlewares
 
 import (
-	"prog/constants"
+	"os"
 	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 )
+
+var ACCESS_TOKEN_KEY string = os.Getenv("ACCESS_TOKEN_KEY")
+var REFRESH_TOKEN_KEY string = os.Getenv("REFRESH_TOKEN_KEY")
 
 type JwtCustomClaims struct {
 	UserId int `json:"userId"`
@@ -23,7 +26,7 @@ func CreateToken(userId int) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(constants.ACCESS_TOKEN_KEY))
+	return token.SignedString([]byte(ACCESS_TOKEN_KEY))
 }
 
 func CreateRefreshToken(userId int) (string, error) {
@@ -35,12 +38,12 @@ func CreateRefreshToken(userId int) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(constants.REFRESH_TOKEN_KEY))
+	return token.SignedString([]byte(REFRESH_TOKEN_KEY))
 }
 
 func VerifyRefreshToken(refreshToken string) (userId int, err error) {
 	keyFunc := func(t *jwt.Token) (interface{}, error) {
-		return []byte(constants.REFRESH_TOKEN_KEY), nil
+		return []byte(REFRESH_TOKEN_KEY), nil
 	}
 	jwtToken, err := jwt.ParseWithClaims(refreshToken, &JwtCustomClaims{}, keyFunc)
 	if err != nil {
@@ -56,7 +59,7 @@ func VerifyRefreshToken(refreshToken string) (userId int, err error) {
 
 func VerifyAccessToken(c echo.Context) (userId int, err error) {
 	keyFunc := func(t *jwt.Token) (interface{}, error) {
-		return []byte(constants.ACCESS_TOKEN_KEY), nil
+		return []byte(ACCESS_TOKEN_KEY), nil
 	}
 	accessToken := strings.Split(c.Request().Header.Get("Authorization"), " ")[1]
 	jwtToken, err := jwt.ParseWithClaims(accessToken, &JwtCustomClaims{}, keyFunc)
