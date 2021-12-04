@@ -7,6 +7,7 @@ import (
 	comments "prog/features/comments/data"
 	follows "prog/features/follows/data"
 	likes "prog/features/likes/data"
+	series "prog/features/series/data"
 	users "prog/features/users/data"
 )
 
@@ -19,5 +20,7 @@ func AutoMigrate() {
 		&likes.ArticleLikes{},
 		&comments.Comment{},
 		&follows.Follow{},
+		&series.ArticleSeries{},
+		&series.Series{},
 	)
 }

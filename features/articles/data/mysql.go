@@ -31,7 +31,7 @@ func (ar *mysqlArticleRepository) CreateTags(tags []articles.TagCore) ([]article
 	}
 	err := ar.Conn.Where("title IN ?", tagsTitle).Find(&articleTags).Error
 	if err != nil {
-		return []articles.TagCore{}, err
+		return nil, err
 	}
 	return ToTagsCoreList(articleTags), nil
 
@@ -52,7 +52,7 @@ func (ar *mysqlArticleRepository) GetAllArticles() ([]articles.ArticleCore, erro
 	articles := []Article{}
 	err := ar.Conn.Joins("User").Preload("Tags").Find(&articles).Error
 	if err != nil {
-		return ToArticleCoreList([]Article{}), err
+		return nil, err
 	}
 	return ToArticleCoreList(articles), nil
 }
@@ -117,7 +117,7 @@ func (ar *mysqlArticleRepository) GetAllUserArticles(userId int) ([]articles.Art
 	articles := []Article{}
 	err := ar.Conn.Joins("User").Preload("Tags").Where("user_id = ?", userId).Find(&articles).Error
 	if err != nil {
-		return ToArticleCoreList([]Article{}), err
+		return nil, err
 	}
 	return ToArticleCoreList(articles), nil
 }
