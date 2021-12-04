@@ -13,6 +13,27 @@ type Business struct {
 	mock.Mock
 }
 
+// CreateUser provides a mock function with given fields: data
+func (_m *Business) CreateUser(data users.Core) (int, error) {
+	ret := _m.Called(data)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(users.Core) int); ok {
+		r0 = rf(data)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(users.Core) error); ok {
+		r1 = rf(data)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // DeleteUserById provides a mock function with given fields: userId
 func (_m *Business) DeleteUserById(userId int) error {
 	ret := _m.Called(userId)
@@ -64,27 +85,6 @@ func (_m *Business) GetUserById(id int) (users.Core, error) {
 	var r1 error
 	if rf, ok := ret.Get(1).(func(int) error); ok {
 		r1 = rf(id)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// RegisterUser provides a mock function with given fields: data
-func (_m *Business) RegisterUser(data users.Core) (int, error) {
-	ret := _m.Called(data)
-
-	var r0 int
-	if rf, ok := ret.Get(0).(func(users.Core) int); ok {
-		r0 = rf(data)
-	} else {
-		r0 = ret.Get(0).(int)
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(users.Core) error); ok {
-		r1 = rf(data)
 	} else {
 		r1 = ret.Error(1)
 	}

@@ -9,7 +9,7 @@ type Core struct {
 }
 
 type Business interface {
-	RegisterUser(data Core) (userId int, err error)
+	CreateUser(data Core) (userId int, err error)
 	GetAllUsers() ([]Core, error)
 	GetUserById(id int) (Core, error)
 	UpdateUserById(userId int, data Core) error

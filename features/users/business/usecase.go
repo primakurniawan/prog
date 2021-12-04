@@ -14,11 +14,12 @@ func NewUserBusiness(userData users.Data) users.Business {
 	return &userUsecase{UserData: userData}
 }
 
-func (uu *userUsecase) RegisterUser(data users.Core) (userId int, err error) {
+func (uu *userUsecase) CreateUser(data users.Core) (userId int, err error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(data.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return 0, err
 	}
+
 	newUser := users.Core{
 		Email:    data.Email,
 		Password: string(hashedPassword),

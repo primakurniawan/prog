@@ -53,18 +53,26 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestRegisterUser(t *testing.T) {
+func TestCreateUser(t *testing.T) {
 
 	t.Run("create user success", func(t *testing.T) {
 		userRepo.On("CreateUser", mock.AnythingOfType("users.Core")).Return(1, nil).Once()
-		userId, err := userBusiness.RegisterUser(userData)
+		userId, err := userBusiness.CreateUser(userData)
 		assert.Nil(t, err)
 		assert.Equal(t, userId, 1)
 	})
 
+	t.Run("fail create user hashed password", func(t *testing.T) {
+		userRepo.On("CreateUser", mock.AnythingOfType("users.Core")).Return(0, errors.New("fail create user hashed password"))
+		userId, err := userBusiness.CreateUser(userData)
+		assert.NotNil(t, err)
+		assert.Equal(t, userId, 0)
+		assert.Equal(t, err.Error(), "fail create user hashed password")
+	})
+
 	t.Run("create user fail", func(t *testing.T) {
 		userRepo.On("CreateUser", mock.AnythingOfType("users.Core")).Return(0, errors.New("fail create user"))
-		userId, err := userBusiness.RegisterUser(userData)
+		userId, err := userBusiness.CreateUser(userData)
 		assert.NotNil(t, err)
 		assert.Equal(t, userId, 0)
 		assert.Equal(t, err.Error(), "fail create user")
