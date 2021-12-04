@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"net/http"
 	"prog/constants"
 	"prog/factory"
 	"prog/middlewares"
@@ -20,6 +21,9 @@ func New() *echo.Echo {
 
 	presenter := factory.Init()
 
+	n.GET("api/check/health", func(c echo.Context) error {
+		return c.String(http.StatusOK, "OK!")
+	})
 	eAuth := e.Group("/auth")
 	eAuth.POST("", presenter.AuthHandler.LoginHandler)
 	eAuth.PUT("", presenter.AuthHandler.ReLoginHandler)
