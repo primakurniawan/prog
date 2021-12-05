@@ -23,7 +23,7 @@ func New() *echo.Echo {
 
 	presenter := factory.Init()
 
-	n.GET("api/check/health", func(c echo.Context) error {
+	n.GET("/api/check/health", func(c echo.Context) error {
 		return c.String(http.StatusOK, "OK!")
 	})
 	eAuth := e.Group("/auth")
